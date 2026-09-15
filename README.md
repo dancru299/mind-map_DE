@@ -106,3 +106,4 @@ tests/content.test.ts   # kiểm tra nội dung và lộ trình
 
 Phím tắt: `→ ←` vào con / về cha · `↑ ↓` anh em · `Enter` mở/đóng · `+ − 0` zoom / vừa màn hình · `C` về mục đang chọn · `N P` bước sau / trước trong lộ trình · `/` tìm kiếm.
 # mind-map_DE
+# mind-map_DE
