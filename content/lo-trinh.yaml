@@ -1,0 +1,148 @@
+# Lộ trình học gợi ý cho Dev chuyển sang DE. Mỗi bước là một id trong content/ (đường dẫn URL không có dấu / đầu).
+# Thứ tự trong file = thứ tự học. Sửa file này là cây tự cập nhật; id sai sẽ làm build fail.
+title: Lộ trình cho Dev chuyển sang DE
+intro: >-
+  Khoảng 8–10 tuần nếu học song song với đi làm. Nguyên tắc: SQL và modeling trước (không phụ thuộc tool),
+  dựng một pipeline end-to-end bằng dbt + Airflow ở giữa, hệ phân tán và streaming để sau cùng.
+  Mục không nằm trong lộ trình vẫn đáng đọc — nhưng đọc khi công việc chạm tới.
+
+phases:
+  - name: Nền móng
+    goal: "Tuần 1–3. Hai kỹ năng sống lâu nhất: SQL trên dữ liệu lớn và cách tổ chức bảng."
+    steps:
+      - id: vai-tro-su-nghiep/lo-trinh-cho-dev-chuyen-sang-de
+        note: >-
+          Đọc trước để biết mình đã có gì và thiếu gì; quay lại đây sau mỗi giai đoạn.
+      - id: luu-tru-storage/oltp-vs-olap
+        note: >-
+          Lý do DE tồn tại. Hiểu vì sao không chạy analytics trên DB production.
+      - id: nen-tang/sql-nang-cao/window-function
+        note: >-
+          Hàm dùng nhiều nhất trong DE. Luyện tới khi viết ROW_NUMBER / LAG / running total không cần tra.
+      - id: nen-tang/sql-nang-cao/khu-trung-lap
+        note: >-
+          Bài toán gặp mỗi tuần. Nhớ luôn thêm tie-breaker.
+      - id: nen-tang/sql-nang-cao/join-nang-cao
+        note: >-
+          Fan-out và bẫy NULL là hai nguồn số sai phổ biến nhất.
+      - id: nen-tang/data-modeling/chon-grain
+        note: >-
+          Câu hỏi đầu tiên trước khi tạo bất kỳ bảng nào.
+      - id: nen-tang/data-modeling/dimensional-modeling-kimball
+        note: >-
+          Fact / dimension / star schema — ngôn ngữ chung của mọi team data.
+      - id: nen-tang/data-modeling/slowly-changing-dimension-scd
+        note: >-
+          Type 2 là thứ bạn sẽ phải làm thật; dbt snapshot làm hộ phần lớn.
+      - id: nen-tang/dinh-dang-file-luu-tru-cot
+        note: >-
+          Ngắn, nhưng giải thích vì sao Parquet + cột rẻ hơn CSV 10 lần.
+
+  - name: Một pipeline end-to-end
+    goal: "Tuần 4–6. Dựng thật một pipeline: nguồn → warehouse → dbt → dashboard, có test và backfill được."
+    steps:
+      - id: xu-ly-bien-doi/etl-vs-elt
+        note: >-
+          Khung tư duy cho toàn bộ giai đoạn này — tải thô vào trước, biến đổi bằng SQL sau.
+      - id: luu-tru-storage/data-warehouse/bigquery
+        note: >-
+          Chọn một warehouse và học tới mức hiểu hoá đơn. Dùng Snowflake thì đọc mục Snowflake thay thế.
+      - id: luu-tru-storage/data-warehouse/partition-va-cluster
+        note: >-
+          Đòn bẩy chi phí rẻ nhất; đo bytes_processed trước/sau.
+      - id: thu-thap-ingestion/batch-ingestion
+        note: >-
+          Full load vs incremental, watermark. Luôn hỏi "dòng bị xoá ở nguồn thì sao?".
+      - id: xu-ly-bien-doi/kien-truc-medallion
+        note: >-
+          Quy ước lớp raw / cleaned / marts để project không thành mớ bòng bong.
+      - id: xu-ly-bien-doi/dbt/cau-truc-project
+        note: >-
+          Bắt đầu dbt từ cấu trúc chuẩn; đừng phát minh cấu trúc riêng.
+      - id: xu-ly-bien-doi/dbt/materialization
+        note: >-
+          view cho staging, table cho marts; incremental để sau.
+      - id: xu-ly-bien-doi/dbt/test
+        note: >-
+          Test dữ liệu như test code — thói quen Dev mang sang có giá trị nhất ở đây.
+      - id: dieu-phoi-orchestration/idempotency-backfill
+        note: >-
+          Hai tính chất phân biệt pipeline nghiêm túc với script chạy được. Đọc trước khi đụng Airflow.
+      - id: dieu-phoi-orchestration/apache-airflow/logical-date-va-catchup
+        note: >-
+          Hiểu sai logical_date là backfill sai. Không dùng datetime.now() trong task.
+      - id: dieu-phoi-orchestration/apache-airflow/anti-pattern
+        note: >-
+          Đọc để tránh ngay từ DAG đầu tiên.
+
+  - name: Làm cho đúng và rẻ
+    goal: "Tuần 7–8. Pipeline chạy rồi — giờ làm nó không sai âm thầm và không tốn tiền vô ích."
+    steps:
+      - id: xu-ly-bien-doi/dbt/incremental-strategy
+        note: >-
+          Khi bảng đủ lớn để full refresh thành vấn đề. Lookback + merge là cặp an toàn.
+      - id: nen-tang/sql-nang-cao/doc-query-plan
+        note: >-
+          Đọc plan trước khi đổi query. Partition pruning là chỗ tiết kiệm nhiều nhất.
+      - id: nen-tang/sql-nang-cao/cte-va-materialize
+        note: >-
+          WITH không phải cache. Biết engine mình dùng inline hay materialize.
+      - id: chat-luong-quan-tri/kiem-tra-chat-luong-du-lieu
+        note: >-
+          Schema / volume / freshness / distribution — bốn nhóm test đặt ở ranh giới các lớp.
+      - id: luu-tru-storage/data-warehouse/anti-pattern-chi-phi
+        note: >-
+          Mười cách hoá đơn tăng 40%. Lập dashboard chi phí theo team, xem mỗi tuần.
+      - id: van-hanh-nen-tang-dataops/ci-cd-cho-pipeline
+        note: >-
+          Lint SQL, dbt Slim CI, deploy tự động — chỗ Dev chuyển sang có lợi thế lớn nhất.
+      - id: van-hanh-nen-tang-dataops/monitoring-alerting-on-call
+        note: >-
+          Biết pipeline hỏng trước khi người dùng biết.
+
+  - name: Quy mô lớn
+    goal: "Tuần 9–10. Khi SQL trên warehouse không còn đủ: hệ phân tán, Spark, CDC, streaming."
+    steps:
+      - id: nen-tang/he-phan-tan-co-ban
+        note: >-
+          Partition, shuffle, skew, exactly-once, idempotency — đủ để đọc lỗi Spark và thiết kế pipeline không sai dữ liệu.
+      - id: xu-ly-bien-doi/apache-spark/kien-truc-driver-executor
+        note: >-
+          Driver / executor / lazy evaluation. Không collect() bảng lớn.
+      - id: xu-ly-bien-doi/apache-spark/job-stage-task-shuffle
+        note: >-
+          Narrow vs wide, vì sao groupBy tạo stage mới. Shuffle là thứ đắt nhất.
+      - id: xu-ly-bien-doi/apache-spark/toi-uu-spark
+        note: >-
+          Skew, broadcast, repartition — ba thứ sửa được 80% job chậm.
+      - id: thu-thap-ingestion/change-data-capture-cdc
+        note: >-
+          Debezium đọc binlog/WAL — cách bắt cả DELETE mà không tăng tải DB nguồn.
+      - id: thu-thap-ingestion/streaming-ingestion/topic-partition-offset
+        note: >-
+          Thứ tự chỉ trong một partition; key quyết định partition.
+      - id: thu-thap-ingestion/streaming-ingestion/consumer-group-rebalance
+        note: >-
+          Commit sau khi xử lý (at-least-once) + downstream idempotent là cặp thực dụng.
+      - id: kien-truc-mau-thiet-ke/batch-hay-streaming
+        note: >-
+          Câu hỏi thiết kế đắt nhất. Phần lớn báo cáo chịu được 1 giờ trễ.
+
+  - name: Tầm nhìn
+    goal: "Đọc rải rác. Hiểu bức tranh lớn và định vị mình."
+    steps:
+      - id: chat-luong-quan-tri/lineage-catalog
+        note: >-
+          Không có lineage thì không dám xoá bảng cũ.
+      - id: chat-luong-quan-tri/data-contract-schema-registry
+        note: >-
+          Hợp đồng giữa người sinh dữ liệu và người dùng — có kiểm tra tự động.
+      - id: kien-truc-mau-thiet-ke/modern-data-stack
+        note: >-
+          Tổ hợp mặc định của công ty thường; biết để không copy kiến trúc Netflix cho 5 GB.
+      - id: vai-tro-su-nghiep/big-tech-vs-cong-ty-thuong
+        note: >-
+          Khác biệt cốt lõi trong công việc hằng ngày — chọn môi trường phù hợp mục tiêu.
+      - id: vai-tro-su-nghiep/phong-van-de
+        note: >-
+          Tự kiểm tra: SQL live, modeling case, pipeline design.
