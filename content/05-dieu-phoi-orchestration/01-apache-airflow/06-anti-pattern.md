@@ -7,6 +7,7 @@ tools:
   - retries
   - SLA / alerting
   - Variable / Connection
+weight: 5
 ---
 
 | Anti-pattern | Triệu chứng | Sửa |

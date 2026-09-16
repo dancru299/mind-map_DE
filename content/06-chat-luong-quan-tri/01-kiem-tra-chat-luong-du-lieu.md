@@ -8,6 +8,7 @@ tools:
   - Elementary
   - Anomaly detection
   - Reconciliation
+weight: 5
 ---
 
 Bốn nhóm kiểm tra cơ bản:

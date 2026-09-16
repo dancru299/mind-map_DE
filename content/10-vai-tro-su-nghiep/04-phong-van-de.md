@@ -6,6 +6,7 @@ tools:
   - System design
   - Modeling case
   - Behavioral
+weight: 4
 ---
 
 - SQL live coding: window function, khử trùng, gap & island, top-N mỗi nhóm.

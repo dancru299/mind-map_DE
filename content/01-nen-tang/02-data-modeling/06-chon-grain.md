@@ -5,6 +5,7 @@ tools:
   - Grain
   - Atomic grain
   - Aggregate table
+weight: 5
 ---
 
 Grain là định nghĩa **một dòng đại diện cho cái gì**: một đơn hàng? một dòng hàng trong đơn? một đơn hàng mỗi ngày (snapshot)? Mọi quyết định khác — cột nào được phép có, join với gì, `SUM` cái gì có nghĩa — đều đi ra từ grain.

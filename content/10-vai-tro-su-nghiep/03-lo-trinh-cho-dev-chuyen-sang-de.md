@@ -8,6 +8,7 @@ tools:
   - Airflow
   - BigQuery
   - Portfolio project
+weight: 4
 ---
 
 Đã có: lập trình, Git, test, CI/CD, Linux, tư duy hệ thống — đây là thứ nhiều team data thiếu.

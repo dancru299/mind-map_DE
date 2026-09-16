@@ -6,6 +6,7 @@ tools:
   - Junk dimension
   - Degenerate dimension
   - Many-to-many
+weight: 3
 ---
 
 ## Bridge table — quan hệ nhiều-nhiều

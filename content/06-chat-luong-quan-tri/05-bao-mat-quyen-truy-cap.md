@@ -13,6 +13,7 @@ tools:
 bigtech: >-
   Tập đoàn lớn ngoài tech (ngân hàng, bảo hiểm, tập đoàn đa ngành): bảo mật và tuân thủ chiếm phần
   lớn thời gian thiết kế. Startup: thường bị bỏ qua tới khi cần chứng chỉ hoặc bị audit.
+weight: 4
 ---
 
 - RBAC: ai được đọc dataset nào; nhóm theo vai trò thay vì cấp lẻ từng người.

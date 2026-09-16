@@ -7,6 +7,7 @@ tools:
   - Avro
   - JSON Lines
   - Compression (snappy, zstd)
+weight: 4
 ---
 
 - Row-based (CSV, JSON, Avro): đọc nguyên dòng, tốt cho ghi và streaming.

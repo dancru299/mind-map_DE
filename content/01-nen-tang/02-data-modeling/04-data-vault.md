@@ -7,6 +7,7 @@ tools:
   - Satellite
   - Raw vault
   - Business vault
+weight: 2
 ---
 
 Tách dữ liệu thành Hub (khoá nghiệp vụ), Link (quan hệ) và Satellite (thuộc tính có lịch sử). Rất linh hoạt khi thêm nguồn mới, nhưng phức tạp và cần lớp trình bày (mart) phía trên.

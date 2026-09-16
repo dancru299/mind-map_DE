@@ -9,6 +9,7 @@ tools:
   - Superset
   - Aggregate table
   - Extract vs live
+weight: 3
 ---
 
 Dashboard chậm thường là lỗi modeling chứ không phải lỗi tool: join tại thời điểm query, không có bảng tổng hợp sẵn, không partition.

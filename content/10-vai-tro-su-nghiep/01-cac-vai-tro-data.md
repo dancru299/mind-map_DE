@@ -7,6 +7,7 @@ tools:
   - Data Analyst
   - Data Scientist
   - ML Engineer
+weight: 3
 ---
 
 - Data Engineer: ingestion, pipeline, storage, orchestration, chất lượng.

@@ -7,6 +7,7 @@ tools:
   - auto.offset.reset
   - Rebalance
   - Consumer lag
+weight: 4
 ---
 
 **Consumer group**: các consumer cùng `group.id` chia nhau partition của topic — mỗi partition được đúng một consumer trong group đọc. 6 partition, 3 consumer → mỗi consumer 2 partition; 8 consumer → 2 consumer ngồi không. Hai group khác nhau đọc độc lập, mỗi group có offset riêng (một topic phục vụ cả warehouse lẫn fraud detection).

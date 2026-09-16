@@ -6,6 +6,7 @@ tools:
   - valid_from/valid_to
   - dbt snapshot
   - MERGE
+weight: 5
 ---
 
 Dimension thay đổi theo thời gian. SCD là các cách ghi lại thay đổi đó.

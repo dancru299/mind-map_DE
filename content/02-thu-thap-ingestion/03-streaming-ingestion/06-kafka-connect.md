@@ -7,6 +7,7 @@ tools:
   - Debezium
   - BigQuery / S3 sink
   - SMT (Single Message Transform)
+weight: 3
 ---
 
 Kafka Connect là framework chạy các **connector** — plugin đã viết sẵn để đọc từ hệ thống ngoài vào Kafka (*source*) hoặc từ Kafka ra ngoài (*sink*). Bạn viết JSON cấu hình, không viết consumer/producer.

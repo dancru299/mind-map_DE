@@ -12,6 +12,7 @@ tools:
 bigtech: >-
   Big tech (Netflix, Apple, LinkedIn) là nơi sinh ra Iceberg. Công ty thường: chỉ cần khi có lake
   lớn và nhiều engine đọc chung; nếu chỉ dùng BigQuery thì chưa cần.
+weight: 4
 ---
 
 Table format thêm một lớp metadata lên file Parquet để có: transaction ACID, time travel, schema evolution, upsert/delete, compaction.

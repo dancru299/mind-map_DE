@@ -7,6 +7,7 @@ tools:
   - manifest.json
   - dbt build
   - sqlfluff
+weight: 4
 ---
 
 ## Slim CI

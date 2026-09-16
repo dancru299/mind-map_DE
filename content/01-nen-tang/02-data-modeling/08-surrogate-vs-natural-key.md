@@ -6,6 +6,7 @@ tools:
   - Natural / business key
   - Hash key
   - dbt_utils.generate_surrogate_key
+weight: 4
 ---
 
 - **Natural (business) key**: khoá có nghĩa nghiệp vụ, đến từ nguồn — `customer_id` của CRM, mã sản phẩm, số CMND.

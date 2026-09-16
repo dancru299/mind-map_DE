@@ -6,6 +6,7 @@ tools:
   - Periodic snapshot
   - Accumulating snapshot
   - Factless fact
+weight: 4
 ---
 
 | Loại | Một dòng = | Trả lời câu hỏi | Ví dụ |

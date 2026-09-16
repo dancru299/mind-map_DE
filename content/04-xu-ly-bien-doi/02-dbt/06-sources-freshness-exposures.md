@@ -7,6 +7,7 @@ tools:
   - loaded_at_field
   - exposures
   - dbt docs
+weight: 4
 ---
 
 ## Sources — đầu vào

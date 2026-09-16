@@ -7,6 +7,7 @@ tools:
   - Key partitioner
   - linger.ms / batch.size
   - Transactions
+weight: 4
 ---
 
 Producer gom message thành batch, gửi tới leader của partition, chờ xác nhận. Ba cấu hình quyết định độ tin cậy:

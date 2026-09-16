@@ -1,0 +1,289 @@
+- term: "Spark"
+  aliases: ["PySpark"]
+  type: tool
+  def: >-
+    Apache Spark — engine xử lý dữ liệu phân tán trên nhiều máy; dùng qua PySpark (Python), Scala, hoặc Spark SQL. Khi dữ liệu lớn hơn một máy.
+- term: "DataFrame"
+  type: concept
+  def: >-
+    Bảng có cột và kiểu trong Spark/pandas/polars; API chính để lọc, join, gom. Trong Spark là phân tán và lazy.
+- term: "Lazy evaluation"
+  type: concept
+  def: >-
+    Spark chỉ ghi kế hoạch khi bạn gọi transformation; chỉ thật sự chạy khi có action (write, count, collect). Nhờ vậy tối ưu được cả chuỗi.
+- term: "Driver"
+  type: concept
+  def: >-
+    Tiến trình chạy code của bạn trong Spark: xây kế hoạch, chia task, gom kết quả nhỏ. Driver OOM khi collect() bảng lớn.
+- term: "Executor"
+  type: concept
+  def: >-
+    Tiến trình JVM trên worker Spark chạy task và giữ partition dữ liệu; có số core và RAM cấu hình.
+- term: "Cluster manager (YARN / Kubernetes)"
+  type: concept
+  def: >-
+    Thành phần cấp máy cho driver và executor Spark: YARN (Hadoop), Kubernetes, Standalone, hoặc managed (Databricks, EMR, Dataproc).
+- term: "spark.executor.memory"
+  type: config
+  def: >-
+    RAM cấp cho mỗi executor. Chỉ ~60% dùng được cho dữ liệu sau overhead JVM; PySpark cần thêm memoryOverhead.
+- term: "executor.memoryOverhead"
+  type: config
+  def: >-
+    Bộ nhớ ngoài heap JVM cho executor (tiến trình Python, Arrow, netty). Thiếu là bị "container killed" dù heap còn trống.
+- term: "spark.sql.shuffle.partitions"
+  type: config
+  def: >-
+    Số partition sau mỗi shuffle (mặc định 200). Quá ít với dữ liệu lớn → OOM; quá nhiều với dữ liệu nhỏ → overhead. Chỉnh theo dữ liệu.
+- term: "Shuffle"
+  type: concept
+  def: >-
+    Chuyển dữ liệu giữa các máy để gom cùng khoá về một chỗ (cho join, groupBy). Thao tác đắt nhất trong Spark; mỗi shuffle là một ranh giới stage.
+- term: "Stage boundary"
+  type: concept
+  def: >-
+    Điểm Spark cắt job thành stage — chính là nơi có shuffle. Nhiều stage hơn dự kiến = có shuffle bạn không ngờ.
+- term: "Narrow transformation"
+  type: concept
+  def: >-
+    Phép biến đổi mà mỗi partition ra chỉ cần một partition vào (filter, select, map) — chạy tại chỗ, không shuffle.
+- term: "Wide transformation"
+  type: concept
+  def: >-
+    Phép biến đổi cần dữ liệu từ nhiều partition (groupBy, join, distinct, orderBy) — bắt buộc shuffle.
+- term: "Skew"
+  type: concept
+  def: >-
+    Một khoá chiếm phần lớn dữ liệu → một task chạy mãi trong khi 199 task xong trong 5 giây. Sửa bằng salting, AQE, tách khoá nóng.
+- term: "Salting"
+  type: pattern
+  def: >-
+    Thêm số ngẫu nhiên vào khoá nóng để chia nó thành nhiều bucket khi join/gom, rồi gộp lại — cách chữa skew kinh điển.
+- term: "Broadcast"
+  aliases: ["Broadcast join"]
+  type: pattern
+  def: >-
+    Gửi bảng nhỏ tới mọi executor để join tại chỗ, tránh shuffle bảng lớn. Spark tự làm khi bảng nhỏ hơn autoBroadcastJoinThreshold.
+- term: "AQE"
+  type: concept
+  def: >-
+    Adaptive Query Execution (Spark 3): tự gộp partition nhỏ sau shuffle, đổi join strategy, xử lý skew join lúc chạy. Bật mặc định.
+- term: "Catalyst"
+  type: concept
+  def: >-
+    Optimizer của Spark SQL: đẩy filter xuống nguồn, bỏ cột thừa, chọn join — lý do DataFrame/SQL nhanh hơn RDD viết tay.
+- term: "Coalesce"
+  aliases: ["repartition / coalesce"]
+  type: sql
+  def: >-
+    coalesce(n) gộp partition liền kề không shuffle (giảm số file khi ghi); repartition(n, cột) chia lại có shuffle (cân bằng, theo khoá).
+- term: "partitionBy"
+  type: config
+  def: >-
+    Ghi DataFrame thành thư mục theo giá trị cột (order_date=2025-06-01/) — partition vật lý trên lake để đọc sau này prune được.
+- term: "maxRecordsPerFile"
+  type: config
+  def: >-
+    Giới hạn số dòng mỗi file Spark ghi ra — chặn file quá to mà không cần repartition thủ công.
+- term: "Small files problem"
+  type: concept
+  def: >-
+    Hàng nghìn file nhỏ trên lake làm listing metadata chậm hơn đọc dữ liệu. Do ghi mỗi task một file, streaming micro-batch. Sửa bằng coalesce/compaction.
+- term: "Spark UI"
+  aliases: ["Spark UI (Jobs / Stages / SQL)"]
+  type: tool
+  def: >-
+    Giao diện web của Spark (port 4040, History Server): xem job/stage/task, plan SQL, shuffle, spill, GC — nơi trả lời "chậm ở đâu".
+- term: "Task duration distribution"
+  type: concept
+  def: >-
+    Bảng min/median/max thời gian task trong một stage trên Spark UI. Max ≫ median là dấu hiệu skew.
+- term: "Spill (memory / disk)"
+  type: concept
+  def: >-
+    Dữ liệu tràn từ RAM ra đĩa khi executor thiếu bộ nhớ trong shuffle/sort. Spill lớn = chậm; tăng partition hoặc RAM.
+- term: "GC time"
+  type: metric
+  def: >-
+    Thời gian JVM dọn bộ nhớ. Trên 10% thời gian task là executor thiếu RAM hoặc giữ quá nhiều object.
+- term: "Structured Streaming"
+  aliases: ["Spark Structured Streaming"]
+  type: tool
+  def: >-
+    Streaming trên Spark: coi stream như bảng vô hạn được append, xử lý micro-batch, API giống DataFrame. Đủ cho near real-time.
+- term: "EMR"
+  type: tool
+  def: >-
+    Amazon EMR — Spark/Hadoop managed của AWS.
+- term: "Dataproc"
+  type: tool
+  def: >-
+    Google Cloud Dataproc — Spark/Hadoop managed của GCP; có bản serverless.
+- term: "Dataflow"
+  type: tool
+  def: >-
+    Google Cloud Dataflow — dịch vụ chạy Apache Beam (batch + streaming) serverless, tích hợp Pub/Sub → BigQuery.
+- term: "Scala"
+  type: tool
+  def: >-
+    Ngôn ngữ JVM mà Spark được viết bằng; dùng khi cần tối ưu Spark/Flink ở mức thấp hoặc viết connector.
+- term: "Python"
+  type: tool
+  def: >-
+    Ngôn ngữ mặc định của DE cho glue code, DAG Airflow, PySpark, script xử lý; hệ sinh thái thư viện data lớn nhất.
+- term: "Bash"
+  type: tool
+  def: >-
+    Shell script Unix; gần như mọi pipeline cũ có một đoạn bash. Đủ để gọi lệnh, di chuyển file, cron.
+- term: "pandas"
+  type: tool
+  def: >-
+    Thư viện DataFrame Python phổ biến nhất; tiện cho dữ liệu nhỏ (< vài GB), chậm và tốn RAM với dữ liệu lớn.
+- term: "polars"
+  type: tool
+  def: >-
+    Thư viện DataFrame viết bằng Rust, nhanh hơn pandas nhiều lần, lazy, đa luồng — chọn mặc định cho xử lý trên một máy.
+- term: "DuckDB"
+  type: tool
+  def: >-
+    DB analytics nhúng (như SQLite cho OLAP): chạy SQL trên Parquet/CSV ngay trong Python, rất nhanh trên một máy. Thay warehouse ở dev/test.
+- term: "PyArrow"
+  type: tool
+  def: >-
+    Bản Python của Apache Arrow — định dạng bộ nhớ cột chuẩn; đọc/ghi Parquet, trao đổi dữ liệu không copy giữa pandas, polars, Spark.
+- term: "Ibis"
+  type: tool
+  def: >-
+    Thư viện Python viết một API DataFrame, chạy trên nhiều backend (DuckDB, BigQuery, Spark) bằng cách sinh SQL.
+- term: "Type hints"
+  type: practice
+  def: >-
+    Khai báo kiểu tham số và giá trị trả về trong Python (def f(x: int) -> str). IDE và mypy bắt lỗi trước khi chạy; người đọc hiểu ngay.
+- term: "Generator"
+  type: concept
+  def: >-
+    Hàm Python dùng yield trả từng phần tử khi cần thay vì tạo cả list — xử lý triệu dòng mà không giữ tất cả trong RAM.
+- term: "dataclass / pydantic"
+  type: tool
+  def: >-
+    Cách khai báo kiểu bản ghi rõ ràng trong Python: dataclass (chuẩn), pydantic (có validate dữ liệu đầu vào). Thay dict lồng dict.
+- term: "logging"
+  type: tool
+  def: >-
+    Module log chuẩn của Python: có level, timestamp, tắt/bật được, gom về log tập trung. Dùng thay print.
+- term: "pathlib"
+  type: tool
+  def: >-
+    Module Python xử lý đường dẫn file theo kiểu object (Path), thay chuỗi nối tay và os.path.
+- term: "Context manager"
+  type: concept
+  def: >-
+    Cú pháp with … as trong Python bảo đảm đóng kết nối/file dù có lỗi — dùng cho DB connection, file, transaction.
+- term: "pytest"
+  type: tool
+  def: >-
+    Framework test Python phổ biến nhất: hàm test_*, assert thường, fixture, chạy song song.
+- term: "Fixture"
+  type: concept
+  def: >-
+    Dữ liệu/đối tượng chuẩn bị sẵn cho test (bảng mẫu, kết nối DuckDB) — pytest cung cấp qua tham số hàm test.
+- term: "Sample data"
+  type: concept
+  def: >-
+    Bộ dữ liệu nhỏ, tự sinh, không có PII, đủ ca biên để test pipeline ở dev/CI thay vì dùng dữ liệu prod.
+- term: "Golden dataset"
+  type: concept
+  def: >-
+    Bộ input + output mong đợi đã được xác nhận đúng; mỗi lần đổi code chạy lại và so — bắt hồi quy trong logic biến đổi.
+- term: "venv / uv / poetry"
+  type: tool
+  def: >-
+    Công cụ tạo môi trường Python riêng cho mỗi project: venv (chuẩn), uv (rất nhanh), poetry (quản lý dependency + đóng gói).
+- term: "requirements.txt / lock file"
+  type: concept
+  def: >-
+    Danh sách thư viện với version cố định để cài đúng bộ đã test ở mọi nơi. Lock file (uv.lock, poetry.lock) ghi cả phụ thuộc gián tiếp.
+- term: "pyproject.toml"
+  type: config
+  def: >-
+    File cấu hình chuẩn của project Python: tên, dependency, cấu hình ruff/mypy/pytest ở một chỗ.
+- term: "Docker"
+  type: tool
+  def: >-
+    Đóng gói code + runtime + thư viện thành image chạy giống nhau ở laptop, CI, prod. Cần khi môi trường phức tạp (Java cho Spark, driver DB).
+- term: "Pre-commit"
+  type: tool
+  def: >-
+    Hook chạy lint/format/kiểm tra secret trước mỗi commit — chặn lỗi style và rò rỉ credential trước khi vào repo.
+- term: "Git"
+  type: tool
+  def: >-
+    Hệ thống quản lý phiên bản; mọi code pipeline, SQL, cấu hình phải nằm trong Git để review, lịch sử, rollback.
+- term: "SSH"
+  type: tool
+  def: >-
+    Giao thức đăng nhập/chạy lệnh trên máy từ xa an toàn; nền của SFTP và truy cập server.
+- term: "VPC"
+  type: concept
+  def: >-
+    Virtual Private Cloud — mạng riêng trên cloud; hiểu để biết vì sao Airflow không kết nối được DB (firewall, private IP, peering).
+- term: "Distributed systems"
+  type: concept
+  def: >-
+    Hệ thống chạy trên nhiều máy: dữ liệu và việc được chia ra, phải xử lý máy chết, mạng chậm, thứ tự sự kiện. Nền của Spark, Kafka, warehouse.
+- term: "CAP"
+  type: concept
+  def: >-
+    Định lý: khi mạng bị chia cắt, hệ phân tán phải chọn nhất quán (C) hoặc sẵn sàng (A). Giải thích vì sao DB khác nhau đánh đổi khác nhau.
+- term: "Hash table"
+  type: concept
+  def: >-
+    Cấu trúc tra cứu theo khoá O(1) trung bình. Nền của hash join, hash aggregate, và dedup trong bộ nhớ.
+- term: "Sort-merge vs hash join"
+  type: concept
+  def: >-
+    Hai cách join: hash (xây bảng băm từ bên nhỏ, nhanh khi vừa RAM) và sort-merge (sắp xếp cả hai bên rồi gộp, dùng khi cả hai lớn).
+- term: "Bloom filter"
+  type: concept
+  def: >-
+    Cấu trúc rất nhỏ trả lời "chắc chắn không có / có thể có". Parquet, Iceberg, Spark dùng để bỏ qua file không chứa khoá đang tìm.
+- term: "B-tree vs LSM tree"
+  type: concept
+  def: >-
+    B-tree (Postgres index): đọc nhanh, ghi tốn. LSM tree (Cassandra, RocksDB): ghi nhanh theo lô, đọc phải merge. Quyết định DB nào cho workload nào.
+- term: "Big-O cho dữ liệu lớn"
+  type: concept
+  def: >-
+    Ước lượng độ phức tạp thực dụng: O(n) trên tỷ dòng chạy được, O(n log n) tốn shuffle, O(n²) (cross join, self join không khoá) không bao giờ xong.
+- term: "Semi-structured"
+  type: concept
+  def: >-
+    Dữ liệu có trường nhưng lồng và thay đổi (JSON, XML, Avro) — giữa bảng có cấu trúc và text tự do.
+- term: "Schema-on-read"
+  type: concept
+  def: >-
+    Không ép cấu trúc khi ghi (lưu JSON/file thô), áp schema lúc đọc. Linh hoạt cho raw, nhưng lớp sau phải có schema rõ.
+- term: "Flatten"
+  type: pattern
+  def: >-
+    Làm phẳng JSON lồng thành cột phẳng (chỉ trường cần dùng), mảng thành dòng — để analyst query không cần biết JSON.
+- term: "Standardization"
+  type: pattern
+  def: >-
+    Chuẩn hoá giá trị về một dạng (hoa/thường, khoảng trắng, đơn vị, mã vùng) ở staging theo quy tắc ghi rõ và bảng ánh xạ có owner.
+- term: "Deduplication"
+  type: pattern
+  def: >-
+    Khử trùng lặp theo khoá, quyết định giữ bản nào (thường mới nhất) và ghi lại số dòng bị loại.
+- term: "Missing value policy"
+  type: practice
+  def: >-
+    Quy tắc theo cột cho giá trị thiếu: giữ NULL, điền mặc định, lấy từ nguồn khác, hay loại dòng — ghi vào docs cột. Không điền 0 cho tiền.
+- term: "Outlier"
+  type: concept
+  def: >-
+    Giá trị vô lý hoặc xa phân phối (tuổi 200, đơn âm). Cắm cờ và cách ly để nghiệp vụ quyết, không tự xoá.
+- term: "Quarantine table"
+  type: pattern
+  def: >-
+    Bảng chứa dòng không hợp lệ (ép kiểu thất bại, giá trị vô lý) kèm lý do — dữ liệu xấu không biến mất, pipeline vẫn chạy tiếp.

@@ -1,4 +1,4 @@
-import { tree, route } from 'virtual:content'
+import { tree, route, glossary } from 'virtual:content'
 import type { TreeNode } from './types'
 
 /**
@@ -9,17 +9,19 @@ type Raw = typeof tree
 
 function attach(r: Raw, parent: TreeNode | null, depth: number, branch: number): TreeNode {
   const id = depth === 0 ? '' : parent!.id ? `${parent!.id}/${r.slug}` : r.slug
-  const node: TreeNode = { id, slug: r.slug, title: r.title, tagline: r.tagline, tools: r.tools, bigtech: r.bigtech, body: r.body, depth, branch, parent, children: [] }
+  const node: TreeNode = { id, slug: r.slug, title: r.title, tagline: r.tagline, tools: r.tools, bigtech: r.bigtech, weight: r.weight, weightSum: 0, share: 0, body: r.body, depth, branch, parent, children: [] }
   node.children = r.children.map((c, i) => attach(c, node, depth + 1, depth === 0 ? i : branch))
+  node.weightSum = node.children.length ? node.children.reduce((a, c) => a + c.weightSum, 0) : r.weight
   return node
 }
 
 export const ROOT: TreeNode = attach(tree, null, 0, -1)
+;(function setShare(n: TreeNode) { n.share = n.weightSum / ROOT.weightSum; n.children.forEach(setShare) })(ROOT)
 export const ALL: TreeNode[] = (() => { const out: TreeNode[] = []; (function walk(n: TreeNode) { out.push(n); n.children.forEach(walk) })(ROOT); return out })()
 export const BY_ID: Map<string, TreeNode> = new Map(ALL.map(n => [n.id, n]))
 
 export function pathOf(n: TreeNode): TreeNode[] { const out: TreeNode[] = []; let s: TreeNode | null = n; while (s) { out.unshift(s); s = s.parent } return out }
-export function colorOf(n: TreeNode): string { return n.depth === 0 ? 'var(--accent)' : `var(--c${n.branch % 10})` }
+export function colorOf(n: TreeNode): string { return n.depth === 0 ? 'var(--accent)' : `var(--c${n.branch % 11})` }
 export function isAncestorOrSelf(a: TreeNode, n: TreeNode): boolean { let s: TreeNode | null = n; while (s) { if (s === a) return true; s = s.parent } return false }
 
 // ---- Lộ trình học ----
@@ -36,3 +38,14 @@ route.phases.forEach((ph, pi) => {
   PHASES.push({ name: ph.name, goal: ph.goal, steps })
 })
 export const STEP_BY_ID: Map<string, Step> = new Map(STEPS.map(s => [s.node.id, s]))
+
+// ---- Glossary: định nghĩa từ khoá / công cụ ----
+export interface Gloss { term: string; aliases: string[]; type: 'tool' | 'concept' | 'pattern' | 'sql' | 'config' | 'practice' | 'role' | 'book' | 'metric'; def: string; more?: string; nodes: TreeNode[] }
+export const GLOSS_TYPE_LABEL: Record<Gloss['type'], string> = { tool: 'Công cụ', concept: 'Khái niệm', pattern: 'Mẫu / kỹ thuật', sql: 'Cú pháp SQL', config: 'Cấu hình', practice: 'Thực hành', role: 'Vai trò', book: 'Sách / nguồn', metric: 'Chỉ số' }
+const normTerm = (s: string) => s.normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase()
+export const GLOSSARY: Gloss[] = glossary.map(g => ({ ...g, nodes: [] }))
+const GLOSS_BY_KEY = new Map<string, Gloss>()
+for (const g of GLOSSARY) for (const k of [g.term, ...g.aliases]) GLOSS_BY_KEY.set(normTerm(k), g)
+for (const n of ALL) for (const t of n.tools) { const g = GLOSS_BY_KEY.get(normTerm(t)); if (g && !g.nodes.includes(n)) g.nodes.push(n) }
+/** Tra định nghĩa cho một chip; undefined nếu chưa có */
+export const glossOf = (term: string): Gloss | undefined => GLOSS_BY_KEY.get(normTerm(term))

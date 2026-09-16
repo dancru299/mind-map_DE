@@ -8,6 +8,7 @@ tools:
   - Airflow
   - Looker
   - SaaS sprawl
+weight: 4
 ---
 
 Fivetran/Airbyte (ingest) → BigQuery/Snowflake (store) → dbt (transform) → Airflow/Dagster (orchestrate) → Looker/Metabase (BI) → Hightouch (reverse ETL). Gần như toàn bộ là managed, một team 2–3 DE vận hành được.

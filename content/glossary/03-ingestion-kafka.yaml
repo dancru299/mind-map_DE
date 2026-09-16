@@ -1,0 +1,302 @@
+- term: "Batch"
+  type: concept
+  def: >-
+    Xử lý dữ liệu theo lô, theo lịch (mỗi giờ, mỗi đêm). Đơn giản, rẻ, dễ chạy lại; đủ cho phần lớn báo cáo.
+- term: "Streaming"
+  type: concept
+  def: >-
+    Xử lý từng sự kiện ngay khi đến, độ trễ giây. Cần Kafka/Flink, khó vận hành hơn batch nhiều lần.
+- term: "Batch vs streaming"
+  type: concept
+  def: >-
+    Câu hỏi thiết kế đắt nhất: người dùng chịu được trễ bao lâu? Phần lớn chịu được 1 giờ — batch/micro-batch là đủ.
+- term: "Micro-batch"
+  type: concept
+  def: >-
+    Batch rất nhỏ chạy mỗi vài phút — điểm cân bằng giữa độ tươi và độ đơn giản; Spark Structured Streaming hoạt động kiểu này.
+- term: "Near real-time"
+  type: concept
+  def: >-
+    "Gần thời gian thực" — độ trễ vài phút, thường đạt bằng micro-batch thay vì streaming thật.
+- term: "Full load"
+  type: pattern
+  def: >-
+    Lấy lại toàn bộ bảng nguồn mỗi lần chạy. Đơn giản, đúng tuyệt đối, nhưng không scale khi bảng lớn.
+- term: "Incremental"
+  aliases: ["incremental", "Incremental model"]
+  type: pattern
+  def: >-
+    Chỉ xử lý phần dữ liệu mới/đổi từ lần chạy trước (theo updated_at, ID, partition). Rẻ nhưng dễ bỏ sót nếu thiết kế sai.
+- term: "Watermark"
+  type: concept
+  def: >-
+    Mốc "đã xử lý tới đây" — trong batch là giá trị updated_at/ID lớn nhất đã lấy; trong streaming là ngưỡng thời gian sự kiện mà sau đó dữ liệu đến trễ bị bỏ qua.
+- term: "updated_at"
+  type: concept
+  def: >-
+    Cột thời điểm cập nhật cuối của bản ghi ở nguồn — nền của incremental load. Không đáng tin nếu app cập nhật mà không đụng cột này.
+- term: "Late-arriving data"
+  type: concept
+  def: >-
+    Dữ liệu đến sau khi kỳ của nó đã được xử lý (event 23:59 tới lúc 00:10). Cần cửa sổ nhìn lùi (lookback) hoặc watermark để không bỏ sót.
+- term: "CDC"
+  type: concept
+  def: >-
+    Change Data Capture — bắt mọi INSERT/UPDATE/DELETE của DB nguồn (thường từ transaction log) để đồng bộ sang nơi khác gần thời gian thực.
+- term: "Debezium"
+  type: tool
+  def: >-
+    Nền tảng CDC mã nguồn mở: đọc binlog/WAL của MySQL, Postgres, MongoDB, SQL Server… và đẩy thay đổi vào Kafka.
+- term: "binlog"
+  type: concept
+  def: >-
+    Binary log của MySQL — nhật ký mọi thay đổi dữ liệu, dùng cho replication và CDC. Phải bật ở chế độ ROW để CDC đọc được.
+- term: "WAL"
+  type: concept
+  def: >-
+    Write-Ahead Log của Postgres — nhật ký thay đổi ghi trước khi áp vào bảng; CDC đọc qua logical replication slot.
+- term: "Kafka Connect"
+  type: tool
+  def: >-
+    Framework chạy connector đọc từ hệ thống ngoài vào Kafka (source) hoặc từ Kafka ra ngoài (sink) chỉ bằng cấu hình JSON.
+- term: "Datastream"
+  type: tool
+  def: >-
+    Dịch vụ CDC serverless của Google Cloud: từ MySQL/Postgres/Oracle sang BigQuery hoặc GCS, không tự vận hành Debezium.
+- term: "Fivetran"
+  type: tool
+  def: >-
+    Dịch vụ ingestion managed với hàng trăm connector (SaaS, DB) vào warehouse; tính tiền theo dòng; ít việc vận hành, ít kiểm soát.
+- term: "Airbyte"
+  type: tool
+  def: >-
+    Nền tảng ingestion mã nguồn mở (có bản cloud) với nhiều connector; tự host được, connector cộng đồng chất lượng không đều.
+- term: "Stitch"
+  type: tool
+  def: >-
+    Dịch vụ ingestion managed đơn giản (thuộc Talend/Qlik), tiền thân về ý tưởng của Fivetran.
+- term: "Meltano"
+  type: tool
+  def: >-
+    Công cụ ingestion mã nguồn mở dựa trên chuẩn Singer (tap/target), điều khiển bằng CLI và file cấu hình, hợp team thích code.
+- term: "Connector"
+  type: concept
+  def: >-
+    Thành phần đọc từ hoặc ghi vào một hệ thống cụ thể (Salesforce, Postgres, S3) theo giao thức của nó — để bạn không tự viết cho từng API.
+- term: "Source connector"
+  type: concept
+  def: >-
+    Connector Kafka Connect đọc từ hệ thống ngoài (DB, file, API) vào topic Kafka.
+- term: "Sink connector"
+  type: concept
+  def: >-
+    Connector Kafka Connect ghi từ topic Kafka ra hệ thống ngoài (S3/GCS, BigQuery, Elasticsearch).
+- term: "BigQuery / S3 sink"
+  type: tool
+  def: >-
+    Sink connector phổ biến: ghi event từ Kafka thành bảng BigQuery hoặc file Parquet trên S3/GCS theo giờ.
+- term: "SMT (Single Message Transform)"
+  type: concept
+  def: >-
+    Biến đổi nhẹ từng message trên đường đi trong Kafka Connect (đổi tên trường, bỏ PII, tách envelope Debezium). Logic nặng hơn dùng Flink.
+- term: "REST API"
+  type: concept
+  def: >-
+    Giao diện HTTP để lấy/gửi dữ liệu theo tài nguyên (GET /orders). Nguồn phổ biến của DE; phải xử lý phân trang, giới hạn tốc độ, xác thực.
+- term: "Pagination"
+  type: concept
+  def: >-
+    API trả dữ liệu theo trang (page/cursor); pipeline phải lặp qua mọi trang và xử lý trang thay đổi giữa chừng.
+- term: "Rate limit"
+  type: concept
+  def: >-
+    Giới hạn số request/phút API cho phép; vượt là bị chặn (429). Pipeline cần throttle và retry có backoff.
+- term: "Segment"
+  type: tool
+  def: >-
+    Nền tảng thu thập event người dùng (Customer Data Platform): một SDK, gửi tới nhiều đích (warehouse, ads, analytics).
+- term: "Snowplow"
+  type: tool
+  def: >-
+    Nền tảng event tracking mã nguồn mở, tự host, dữ liệu thô đầy đủ vào warehouse của bạn; linh hoạt nhưng tốn vận hành.
+- term: "GA4"
+  type: tool
+  def: >-
+    Google Analytics 4 — công cụ web/app analytics của Google; xuất dữ liệu event thô sang BigQuery được.
+- term: "Amplitude"
+  type: tool
+  def: >-
+    Công cụ product analytics (funnel, retention, cohort) trên event người dùng; có export sang warehouse.
+- term: "Tracking plan"
+  type: practice
+  def: >-
+    Tài liệu quy định event nào được ghi, tên gì, thuộc tính bắt buộc, ai owner. Tracking sai từ đầu là dữ liệu mất vĩnh viễn.
+- term: "Event schema"
+  type: concept
+  def: >-
+    Cấu trúc bắt buộc của một event (trường, kiểu, bắt buộc/tuỳ chọn); kiểm tra tại SDK hoặc Schema Registry để dữ liệu vào là sạch.
+- term: "SFTP"
+  type: concept
+  def: >-
+    Truyền file qua SSH — cách đối tác/ngân hàng vẫn gửi dữ liệu hằng ngày. Cần landing zone, validate, archive.
+- term: "Landing zone"
+  type: pattern
+  def: >-
+    Thư mục/bucket nơi file đến nằm chờ xử lý; sau khi validate mới chuyển vào raw. Không xử lý file ngay tại chỗ.
+- term: "Schema drift"
+  type: concept
+  def: >-
+    Cấu trúc nguồn thay đổi ngoài ý muốn (thêm/đổi/bỏ cột, đổi kiểu). Phát hiện bằng test schema ở raw thay vì để pipeline gãy.
+- term: "File sensor"
+  type: tool
+  def: >-
+    Task Airflow chờ file xuất hiện (trên SFTP, S3, GCS) rồi mới cho pipeline chạy tiếp.
+- term: "Kafka"
+  type: tool
+  def: >-
+    Apache Kafka — nền tảng streaming: log sự kiện phân tán, bền, replay được; producer ghi vào topic, consumer đọc theo offset.
+- term: "Topic"
+  type: concept
+  def: >-
+    Luồng sự kiện có tên trong Kafka (orders, page_views). Chia thành partition; giữ message tới hết retention bất kể đã đọc chưa.
+- term: "Offset"
+  type: concept
+  def: >-
+    Số thứ tự của message trong một partition. Consumer nhớ offset đã đọc; đặt lại offset là replay lịch sử.
+- term: "Key"
+  aliases: ["Key partitioner"]
+  type: concept
+  def: >-
+    Khoá của message Kafka; cùng key được hash vào cùng partition → giữ đúng thứ tự cho một thực thể (customer_id). Không có key: round-robin.
+- term: "Replication factor"
+  type: config
+  def: >-
+    Số bản sao mỗi partition trên các broker khác nhau (thường 3). Broker chết không mất dữ liệu.
+- term: "Consumer group"
+  aliases: ["group.id"]
+  type: concept
+  def: >-
+    Nhóm consumer chia nhau partition của topic, mỗi partition đúng một consumer trong nhóm. Nhóm khác nhau đọc độc lập với offset riêng.
+- term: "Consumer lag"
+  type: metric
+  def: >-
+    Khoảng cách giữa offset mới nhất và offset đã commit — consumer đang tụt bao xa. Chỉ số giám sát quan trọng nhất của Kafka.
+- term: "Rebalance"
+  type: concept
+  def: >-
+    Kafka chia lại partition khi consumer vào/ra nhóm; trong lúc đó cả nhóm ngừng đọc. Rebalance liên tục là dấu hiệu consumer xử lý quá chậm.
+- term: "enable.auto.commit"
+  type: config
+  def: >-
+    Consumer tự commit offset định kỳ (mặc định). Nguy hiểm: commit trước khi xử lý xong → mất message khi crash. Tắt và commit thủ công sau khi ghi.
+- term: "auto.offset.reset"
+  type: config
+  def: >-
+    Consumer group mới bắt đầu từ đâu: earliest (đọc từ đầu) hay latest (chỉ từ bây giờ). Pipeline mới thường cần earliest.
+- term: "acks=all"
+  type: config
+  def: >-
+    Producer chờ tất cả replica đồng bộ xác nhận rồi mới coi là gửi thành công. Kết hợp min.insync.replicas để không mất dữ liệu.
+- term: "enable.idempotence"
+  type: config
+  def: >-
+    Producer gắn số thứ tự để broker loại message gửi lại do retry — chống trùng ở tầng producer. Mặc định bật từ Kafka 3.0.
+- term: "linger.ms / batch.size"
+  type: config
+  def: >-
+    Producer chờ tối đa linger.ms hoặc gom đủ batch.size rồi gửi một lần — đánh đổi vài mili giây độ trễ lấy throughput cao hơn nhiều.
+- term: "Transactions"
+  type: concept
+  def: >-
+    Kafka transactions: ghi nhiều message vào nhiều partition và commit offset như một khối nguyên tử — nền của exactly-once Kafka→Kafka.
+- term: "Retention"
+  aliases: ["retention.ms / retention.bytes"]
+  type: config
+  def: >-
+    Kafka giữ message bao lâu (mặc định 7 ngày) hoặc tới bao nhiêu byte, bất kể đã đọc chưa. Đặt đủ để backfill sau khi pipeline hỏng cuối tuần.
+- term: "cleanup.policy=compact"
+  type: config
+  def: >-
+    Log compaction: với mỗi key chỉ giữ message mới nhất — topic thành "bảng trạng thái hiện tại" rebuild được từ đầu.
+- term: "Tombstone"
+  type: concept
+  def: >-
+    Message có value null trên topic compact, đánh dấu xoá key đó. Bị dọn sau delete.retention.ms.
+- term: "Tiered storage"
+  type: concept
+  def: >-
+    Kafka đẩy segment cũ sang object storage rẻ, giữ segment mới trên đĩa broker — retention hàng tháng thành khả thi.
+- term: "Replay"
+  type: concept
+  def: >-
+    Đọc lại luồng sự kiện từ một offset/thời điểm trong quá khứ để xử lý lại — lý do Kafka giữ message thay vì xoá sau khi đọc.
+- term: "Schema Registry"
+  type: tool
+  def: >-
+    Dịch vụ lưu schema (Avro/Protobuf/JSON Schema) cho topic Kafka, kiểm tra tương thích khi đổi, message chỉ mang id schema.
+- term: "Avro / Protobuf / JSON Schema"
+  type: concept
+  def: >-
+    Ba định dạng có schema mà Schema Registry hỗ trợ: Avro (phổ biến trong data), Protobuf (phổ biến trong microservice), JSON Schema (dễ đọc).
+- term: "Protobuf"
+  type: concept
+  def: >-
+    Protocol Buffers — định dạng nhị phân có schema của Google, nhỏ và nhanh; phổ biến giữa các service, hỗ trợ evolution có quy tắc.
+- term: "BACKWARD / FORWARD / FULL"
+  type: config
+  def: >-
+    Chế độ tương thích của Schema Registry: BACKWARD (consumer mới đọc được dữ liệu cũ), FORWARD (consumer cũ đọc được dữ liệu mới), FULL (cả hai).
+- term: "Backward compatible"
+  type: concept
+  def: >-
+    Thay đổi schema mà code/consumer cũ vẫn đọc được dữ liệu mới (thêm trường có default, không xoá trường bắt buộc).
+- term: "Subject"
+  type: concept
+  def: >-
+    Tên đăng ký schema trong Schema Registry, thường là "<topic>-value" hoặc "<topic>-key"; mỗi subject có nhiều phiên bản.
+- term: "Pub/Sub"
+  type: tool
+  def: >-
+    Google Cloud Pub/Sub — dịch vụ messaging serverless (tương đương Kafka managed, không quản lý partition), tích hợp Dataflow/BigQuery.
+- term: "Kinesis"
+  type: tool
+  def: >-
+    Amazon Kinesis Data Streams — dịch vụ streaming managed của AWS, khái niệm shard tương tự partition Kafka.
+- term: "Kafka Streams"
+  type: tool
+  def: >-
+    Thư viện Java xử lý stream nhúng trong ứng dụng (không cần cluster riêng), nhẹ hơn Flink, dùng cho logic Kafka→Kafka.
+- term: "Apache Flink"
+  aliases: ["Flink"]
+  type: tool
+  def: >-
+    Engine xử lý stream mạnh nhất về stateful processing: event time, window, watermark, exactly-once, checkpoint. Cho ads, fraud, real-time feature.
+- term: "Event time"
+  type: concept
+  def: >-
+    Thời điểm sự kiện thật sự xảy ra (ghi trong event), khác processing time (lúc hệ thống nhận). Tính theo event time mới đúng khi dữ liệu đến trễ.
+- term: "Window (tumbling, sliding, session)"
+  type: concept
+  def: >-
+    Cách chia luồng vô hạn thành khoảng để gom: tumbling (kề nhau, không chồng), sliding (trượt, chồng nhau), session (theo khoảng nghỉ).
+- term: "State"
+  type: concept
+  def: >-
+    Thứ job streaming phải "nhớ" giữa các event (tổng đang cộng dồn, phiên đang mở). Phải checkpoint để khôi phục khi crash.
+- term: "Checkpoint"
+  type: concept
+  def: >-
+    Ảnh chụp định kỳ state + offset của job streaming để khôi phục đúng chỗ sau lỗi (Flink, Spark Structured Streaming).
+- term: "Exactly-once"
+  type: concept
+  def: >-
+    Mỗi sự kiện ảnh hưởng kết quả đúng một lần dù có retry/crash. Đắt và khó; thường thay bằng at-least-once + đích idempotent.
+- term: "Trigger"
+  type: concept
+  def: >-
+    Trong Spark Structured Streaming: quy định khi nào một micro-batch được chạy (mỗi N giây, ngay khi có dữ liệu, hoặc một lần).
+- term: "Idempotent"
+  aliases: ["Idempotency"]
+  type: concept
+  def: >-
+    Chạy lại nhiều lần cho cùng kết quả như chạy một lần. Yêu cầu bắt buộc của pipeline để retry/backfill an toàn (ghi đè partition, MERGE thay vì append).

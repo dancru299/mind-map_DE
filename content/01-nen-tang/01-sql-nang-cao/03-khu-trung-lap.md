@@ -6,6 +6,7 @@ tools:
   - QUALIFY
   - DISTINCT
   - ARRAY_AGG ... LIMIT 1
+weight: 5
 ---
 
 Dữ liệu trùng đến từ khắp nơi: CDC gửi cùng một sự kiện hai lần, pipeline chạy lại mà không idempotent, nguồn có nhiều dòng cho một khoá theo thời gian. Câu hỏi thật sự không phải "bỏ trùng thế nào" mà là **"giữ bản nào"** — thường là bản mới nhất theo `updated_at`.

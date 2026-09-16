@@ -6,6 +6,7 @@ tools:
   - LAG
   - DATE_DIFF
   - Session-ization
+weight: 4
 ---
 
 Bài toán kinh điển: người dùng đăng nhập những ngày nào liên tiếp (streak)? Máy ngừng hoạt động từ lúc nào đến lúc nào? Các sự kiện cách nhau dưới 30 phút thuộc cùng một phiên?

@@ -10,6 +10,7 @@ tools:
 bigtech: >-
   Big tech có công cụ profiling nội bộ và đội tối ưu engine; DE thường được dạy đọc plan từ ngày đầu.
   Công ty thường: ít ai đọc plan, mọi người "thử đổi query xem có nhanh hơn không" — biết đọc plan là lợi thế rõ rệt.
+weight: 5
 ---
 
 Plan là cách engine kể lại nó sẽ làm gì: quét bảng nào, lọc ở đâu, join theo cách nào, dữ liệu di chuyển ra sao giữa các máy. Đổi query mà không đọc plan là đoán mò.

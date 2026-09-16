@@ -8,6 +8,7 @@ tools:
   - MERGE
   - logical_date
   - Partition-aligned
+weight: 5
 ---
 
 Idempotent: chạy pipeline cho partition ngày D nhiều lần vẫn ra đúng một kết quả. Cách làm: ghi đè partition (INSERT OVERWRITE / MERGE theo khoá) thay vì INSERT APPEND.

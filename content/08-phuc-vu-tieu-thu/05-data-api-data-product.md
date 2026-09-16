@@ -7,6 +7,7 @@ tools:
   - REST API
   - SLA
   - Versioning
+weight: 2
 ---
 
 Khi nhiều team/hệ thống cần cùng dữ liệu, mở qua API (REST/GraphQL), bảng chia sẻ (Snowflake Share, BigQuery Analytics Hub), hoặc topic Kafka — kèm docs, schema, SLA, owner. Đây là 'data product' theo nghĩa data mesh.

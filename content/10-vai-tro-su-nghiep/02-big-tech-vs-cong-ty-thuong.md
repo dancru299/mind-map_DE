@@ -8,6 +8,7 @@ tools:
   - Platform team
   - Process
   - Enterprise
+weight: 4
 ---
 
 - Phạm vi: big tech hẹp và sâu (một phần của một hệ thống); công ty thường rộng (từ ingest tới dashboard).

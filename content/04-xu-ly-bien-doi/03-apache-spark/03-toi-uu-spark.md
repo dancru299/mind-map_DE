@@ -8,6 +8,7 @@ tools:
   - Coalesce
   - Spark UI
   - Small files problem
+weight: 4
 ---
 
 - Skew: một khoá chiếm 80% dữ liệu → một task chạy mãi. Sửa bằng salting, AQE skew join.

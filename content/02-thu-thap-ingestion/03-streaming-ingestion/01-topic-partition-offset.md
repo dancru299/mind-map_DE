@@ -7,6 +7,7 @@ tools:
   - Offset
   - Key
   - Replication factor
+weight: 4
 ---
 
 - **Topic**: một luồng sự kiện có tên (`orders`, `page_views`). Producer ghi vào, consumer đọc ra.

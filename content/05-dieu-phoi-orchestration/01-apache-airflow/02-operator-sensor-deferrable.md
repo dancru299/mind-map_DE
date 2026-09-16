@@ -8,6 +8,7 @@ tools:
   - Sensor
   - mode="reschedule"
   - Deferrable / Triggerer
+weight: 4
 ---
 
 ## Operator — task làm một việc

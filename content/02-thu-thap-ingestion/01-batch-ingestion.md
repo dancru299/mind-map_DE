@@ -7,6 +7,7 @@ tools:
   - Watermark
   - updated_at
   - Late-arriving data
+weight: 5
 ---
 
 - Full load: lấy lại toàn bộ bảng mỗi lần. Đơn giản, đúng tuyệt đối, nhưng tốn và không scale.

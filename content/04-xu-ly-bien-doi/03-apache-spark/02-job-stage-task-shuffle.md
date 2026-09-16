@@ -7,6 +7,7 @@ tools:
   - Shuffle
   - Stage boundary
   - spark.sql.shuffle.partitions
+weight: 4
 ---
 
 Mỗi action tạo một **job**. Job được cắt thành **stage** tại mỗi điểm cần shuffle. Mỗi stage gồm nhiều **task**, một task xử lý một partition.

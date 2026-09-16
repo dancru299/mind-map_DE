@@ -8,6 +8,7 @@ tools:
   - Star schema
   - Surrogate key
   - Conformed dimension
+weight: 5
 ---
 
 Bảng fact chứa số đo (doanh thu, số lượng) ở một grain xác định (mỗi dòng = một đơn hàng?). Bảng dimension chứa ngữ cảnh (khách hàng, sản phẩm, ngày).

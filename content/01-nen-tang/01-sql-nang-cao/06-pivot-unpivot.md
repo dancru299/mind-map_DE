@@ -5,6 +5,7 @@ tools:
   - PIVOT / UNPIVOT
   - CASE WHEN + SUM
   - UNION ALL
+weight: 3
 ---
 
 Báo cáo muốn mỗi tháng một cột; warehouse muốn mỗi tháng một dòng (để partition, để thêm tháng mới không phải đổi schema). DE xoay giữa hai dạng này thường xuyên.

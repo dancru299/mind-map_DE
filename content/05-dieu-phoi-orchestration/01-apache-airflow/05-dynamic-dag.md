@@ -7,6 +7,7 @@ tools:
   - globals()
   - Dynamic task mapping
   - dag-factory
+weight: 3
 ---
 
 Khi có 40 bảng cần ingest theo cùng một mẫu (extract → load → test), copy 40 file DAG là nợ kỹ thuật: sửa một chỗ phải sửa 40 file. Thay bằng **một hàm sinh DAG** đọc cấu hình.

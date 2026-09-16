@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   Big tech: yêu cầu coding rigor cao, có code review nghiêm, đôi khi C++/Java. Công ty thường:
   Python + SQL là đủ, nhưng test và CI thường bị bỏ qua — đây là chỗ Dev chuyển sang có lợi thế.
+weight: 4
 ---
 
 DE viết code, nhưng phần lớn là glue code: đọc nguồn, gọi API, biến đổi, ghi đích, xử lý lỗi. Sạch và có test quan trọng hơn thông minh.

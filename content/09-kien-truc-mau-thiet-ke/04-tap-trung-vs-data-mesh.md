@@ -6,6 +6,7 @@ tools:
   - Domain ownership
   - Platform team
   - Federated governance
+weight: 3
 ---
 
 Tập trung: một team DE phục vụ mọi phòng ban — nhất quán, nhưng thành nút thắt khi công ty lớn. Data mesh: mỗi domain có DE riêng, team platform cung cấp nền chung — scale được nhưng dễ phân mảnh nếu governance yếu.

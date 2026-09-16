@@ -10,6 +10,7 @@ tools:
   - dbt docs
   - Dataplex
   - Column-level lineage
+weight: 4
 ---
 
 Catalog: danh bạ dữ liệu — mô tả bảng/cột, owner, tag PII, tần suất cập nhật. Lineage: đồ thị bảng nào sinh ra bảng nào, tới tận dashboard.

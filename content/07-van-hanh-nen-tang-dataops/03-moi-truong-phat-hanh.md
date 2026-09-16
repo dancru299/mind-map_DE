@@ -7,6 +7,7 @@ tools:
   - Data masking
   - Schema per developer
   - Blue/green
+weight: 4
 ---
 
 Khó hơn app vì dữ liệu prod không copy sang dev được (kích thước, bảo mật). Cách thường dùng: dev dùng mẫu (sample) hoặc dữ liệu giả, schema riêng cho mỗi developer, dbt target theo môi trường.

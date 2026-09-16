@@ -1,0 +1,289 @@
+# Glossary: SQL & data modeling. Mỗi entry: term (đúng chữ trên chip), aliases (biến thể), type, def (1–2 câu).
+- term: "SQL"
+  type: concept
+  def: >-
+    Ngôn ngữ truy vấn dữ liệu quan hệ. Trong DE là công cụ chính để lọc, nối, gom và biến đổi dữ liệu trong warehouse.
+- term: "Window function"
+  aliases: ["Window functions", "SUM() OVER"]
+  type: sql
+  def: >-
+    Hàm tính trên một "cửa sổ" các dòng liên quan (cùng khách hàng, theo thứ tự thời gian) mà vẫn giữ nguyên từng dòng.
+    Dùng để xếp hạng, so với dòng trước, cộng dồn.
+- term: "ROW_NUMBER"
+  type: sql
+  def: >-
+    Đánh số thứ tự 1, 2, 3… cho từng dòng trong một nhóm theo thứ tự chỉ định. Công cụ chuẩn để khử trùng lặp
+    ("giữ dòng rn = 1").
+- term: "RANK / DENSE_RANK"
+  type: sql
+  def: >-
+    Xếp hạng có tính đồng hạng: RANK nhảy số sau khi đồng hạng (1, 2, 2, 4), DENSE_RANK không nhảy (1, 2, 2, 3).
+- term: "LAG / LEAD"
+  aliases: ["LAG"]
+  type: sql
+  def: >-
+    Lấy giá trị của dòng trước (LAG) hoặc dòng sau (LEAD) trong cùng cửa sổ — để so kỳ này với kỳ trước, tính khoảng cách giữa hai sự kiện.
+- term: "ROWS BETWEEN"
+  type: sql
+  def: >-
+    Khai báo phạm vi (frame) của window function theo số dòng vật lý, ví dụ "7 dòng trước tới dòng hiện tại" để tính trung bình trượt.
+- term: "QUALIFY"
+  type: sql
+  def: >-
+    Mệnh đề lọc theo kết quả window function ngay trong cùng query (BigQuery, Snowflake, DuckDB), thay cho việc bọc subquery rồi WHERE.
+- term: "CTE"
+  aliases: ["WITH ... AS"]
+  type: sql
+  def: >-
+    Common Table Expression — đặt tên cho một subquery bằng WITH để query dễ đọc. Chỉ là đặt tên; engine có thể tính lại nhiều lần.
+- term: "MATERIALIZED / NOT MATERIALIZED"
+  type: sql
+  def: >-
+    Từ khoá Postgres (≥ 12) ép CTE được tính một lần và lưu tạm (MATERIALIZED) hoặc inline vào query chính (NOT MATERIALIZED).
+- term: "CREATE TEMP TABLE"
+  type: sql
+  def: >-
+    Tạo bảng tạm tồn tại trong phiên/script — cách chắc chắn để tính một khối nặng một lần rồi dùng lại nhiều lần.
+- term: "EXPLAIN"
+  aliases: ["EXPLAIN / EXPLAIN ANALYZE"]
+  type: sql
+  def: >-
+    Lệnh cho engine in ra kế hoạch thực thi (quét gì, join thế nào). ANALYZE chạy thật và kèm thời gian từng bước.
+- term: "Partition pruning"
+  type: concept
+  def: >-
+    Engine bỏ qua các partition không liên quan nhờ điều kiện WHERE trên cột partition — cách giảm byte quét và chi phí lớn nhất.
+- term: "DISTINCT"
+  type: sql
+  def: >-
+    Loại các dòng giống hệt nhau. Không phải dedup theo khoá: hai dòng cùng khoá nhưng khác giá trị vẫn được giữ cả hai.
+- term: "ARRAY_AGG ... LIMIT 1"
+  type: sql
+  def: >-
+    Kỹ thuật BigQuery gom các dòng cùng khoá thành mảng, sắp xếp và lấy phần tử đầu — một cách khử trùng lặp giữ bản mới nhất.
+- term: "DATE_DIFF"
+  type: sql
+  def: >-
+    Hàm tính khoảng cách giữa hai ngày/thời điểm theo đơn vị chọn (ngày, giờ, phút). Dùng trong gaps & islands, SLA, tuổi bản ghi.
+- term: "Session-ization"
+  type: pattern
+  def: >-
+    Gom chuỗi sự kiện của một người thành "phiên" dựa trên khoảng cách thời gian (vd ngắt phiên sau 30 phút không hoạt động).
+- term: "EXISTS / NOT EXISTS"
+  type: sql
+  def: >-
+    Kiểm tra có/không có dòng thoả điều kiện ở bảng khác (semi/anti join) mà không nhân dòng và không dính bẫy NULL của NOT IN.
+- term: "LEFT JOIN ... IS NULL"
+  type: sql
+  def: >-
+    Cách viết anti join: LEFT JOIN rồi lọc những dòng bên phải là NULL để lấy "A không có trong B".
+- term: "NOT IN (bẫy NULL)"
+  type: sql
+  def: >-
+    NOT IN với danh sách chứa NULL trả về UNKNOWN cho mọi dòng → kết quả rỗng. Dùng NOT EXISTS hoặc lọc IS NOT NULL.
+- term: "Fan-out"
+  type: concept
+  def: >-
+    Join làm số dòng tăng lên (một đơn hàng nối với nhiều dòng hàng) khiến SUM/COUNT bị nhân. Nguồn số sai phổ biến nhất.
+- term: "Cross join"
+  type: sql
+  def: >-
+    Nối mọi dòng bảng A với mọi dòng bảng B (tích Descartes). Cố ý thì hiếm; vô tình do thiếu điều kiện ON thì thảm hoạ.
+- term: "PIVOT / UNPIVOT"
+  type: sql
+  def: >-
+    Xoay dòng thành cột (pivot: mỗi tháng một cột) hoặc cột thành dòng (unpivot). Warehouse nên lưu dạng dài, pivot ở tầng trình bày.
+- term: "CASE WHEN + SUM"
+  type: sql
+  def: >-
+    Cách pivot "tay" chạy ở mọi engine: SUM(CASE WHEN cột = giá trị THEN số END) cho từng cột đầu ra.
+- term: "UNION ALL"
+  type: sql
+  def: >-
+    Nối kết quả hai query theo chiều dọc, giữ cả dòng trùng (UNION không ALL sẽ khử trùng và tốn hơn).
+- term: "UNNEST"
+  type: sql
+  def: >-
+    Trải một mảng thành nhiều dòng (BigQuery). Đổi grain của kết quả — phải cẩn thận khi cộng tổng sau đó.
+- term: "JSON_EXTRACT / JSON_VALUE"
+  aliases: ["JSON_EXTRACT"]
+  type: sql
+  def: >-
+    Rút một trường từ cột JSON bằng đường dẫn ($.user.id). JSON_VALUE trả scalar, JSON_QUERY trả JSON con.
+- term: "REGEXP_EXTRACT / REGEXP_REPLACE"
+  type: sql
+  def: >-
+    Hàm regex trong SQL: rút một phần chuỗi khớp mẫu, hoặc thay thế phần khớp. Dùng cho tên file, số điện thoại, log.
+- term: "SPLIT / TRIM / NORMALIZE"
+  type: sql
+  def: >-
+    Ba hàm chuỗi dùng liên tục: tách theo dấu phân cách, bỏ khoảng trắng đầu/cuối, chuẩn hoá Unicode để so khớp đúng.
+- term: "Anchors ^ $"
+  type: concept
+  def: >-
+    Ký hiệu regex đánh dấu đầu (^) và cuối ($) chuỗi — để mẫu khớp toàn bộ chuỗi thay vì một phần bất kỳ.
+- term: "Named group"
+  type: concept
+  def: >-
+    Nhóm regex có tên (?P<name>…) để lấy phần khớp ra theo tên thay vì theo số thứ tự — dễ đọc và bền khi sửa mẫu.
+- term: "Data modeling"
+  aliases: ["Modeling"]
+  type: concept
+  def: >-
+    Cách tổ chức bảng, cột, khoá và quan hệ để dữ liệu dùng được, đúng và rẻ. Kỹ năng tách DE giỏi khỏi người chỉ biết nối tool.
+- term: "Kimball"
+  type: concept
+  def: >-
+    Trường phái dimensional modeling (Ralph Kimball): fact + dimension, star schema, xây từ bottom-up theo quy trình nghiệp vụ.
+    Chuẩn mặc định cho analytics.
+- term: "Inmon"
+  type: concept
+  def: >-
+    Trường phái warehouse doanh nghiệp (Bill Inmon): kho trung tâm chuẩn hoá 3NF, từ đó sinh data mart. Top-down, nặng, hợp tổ chức lớn.
+- term: "Data Vault"
+  aliases: ["Raw vault", "Business vault"]
+  type: concept
+  def: >-
+    Mô hình warehouse chia dữ liệu thành Hub (khoá nghiệp vụ), Link (quan hệ), Satellite (thuộc tính có lịch sử).
+    Linh hoạt khi nhiều nguồn thay đổi; phức tạp, cần lớp mart bên trên.
+- term: "Hub"
+  type: concept
+  def: >-
+    Trong Data Vault: bảng chỉ chứa khoá nghiệp vụ duy nhất của một thực thể (mã khách hàng) và metadata nạp.
+- term: "Link"
+  type: concept
+  def: >-
+    Trong Data Vault: bảng ghi quan hệ giữa các Hub (khách hàng – đơn hàng), cũng chỉ có khoá và metadata.
+- term: "Satellite"
+  type: concept
+  def: >-
+    Trong Data Vault: bảng chứa thuộc tính mô tả của Hub/Link kèm thời gian hiệu lực — nơi giữ lịch sử thay đổi.
+- term: "Star schema"
+  type: pattern
+  def: >-
+    Bảng fact ở giữa, các dimension xung quanh, join một tầng. Đơn giản cho analyst, engine tối ưu tốt.
+- term: "Fact table"
+  type: concept
+  def: >-
+    Bảng chứa số đo (doanh thu, số lượng) ở một grain xác định, kèm khoá trỏ tới các dimension. Thường rất lớn, chỉ append.
+- term: "Dimension"
+  type: concept
+  def: >-
+    Bảng mô tả ngữ cảnh của fact: khách hàng, sản phẩm, ngày, cửa hàng. Nhỏ hơn fact, có thể thay đổi theo thời gian (SCD).
+- term: "Grain"
+  aliases: ["Atomic grain"]
+  type: concept
+  def: >-
+    Định nghĩa "một dòng trong bảng là gì" (một đơn hàng? một dòng hàng?). Atomic grain = mức chi tiết nhất nguồn có; nên bắt đầu từ đó.
+- term: "Surrogate key"
+  type: concept
+  def: >-
+    Khoá do warehouse sinh (số tự tăng hoặc hash), không mang nghĩa nghiệp vụ. Cần cho SCD Type 2 và khi gộp nhiều nguồn.
+- term: "Natural / business key"
+  type: concept
+  def: >-
+    Khoá có nghĩa nghiệp vụ đến từ nguồn (mã khách hàng của CRM). Giữ trong dimension để đối chiếu, nhưng fact nên trỏ bằng surrogate key.
+- term: "Hash key"
+  type: pattern
+  def: >-
+    Surrogate key tạo bằng hash (MD5/SHA) của natural key + nguồn + thời gian. Xác định được, không cần sequence tập trung — hợp warehouse phân tán.
+- term: "dbt_utils.generate_surrogate_key"
+  type: tool
+  def: >-
+    Macro dbt tạo hash key từ danh sách cột, tự xử lý NULL. Cách chuẩn để sinh surrogate key trong dbt.
+- term: "Conformed dimension"
+  type: concept
+  def: >-
+    Dimension dùng chung cho nhiều bảng fact (một dim_date, một dim_customer) để các báo cáo khác nhau nói cùng một ngôn ngữ.
+- term: "SCD Type 2"
+  type: pattern
+  def: >-
+    Cách giữ lịch sử dimension: mỗi thay đổi thêm một dòng mới với valid_from/valid_to/is_current thay vì ghi đè.
+- term: "valid_from/valid_to"
+  type: concept
+  def: >-
+    Cặp cột đánh dấu khoảng thời gian một phiên bản bản ghi có hiệu lực — nền của SCD Type 2 và point-in-time join.
+- term: "dbt snapshot"
+  type: tool
+  def: >-
+    Tính năng dbt tự động làm SCD Type 2: so bảng nguồn với lần chụp trước và thêm dòng mới khi có thay đổi.
+- term: "MERGE"
+  aliases: ["merge"]
+  type: sql
+  def: >-
+    Lệnh upsert: khớp theo khoá thì UPDATE, không khớp thì INSERT (tuỳ chọn DELETE). Công cụ để pipeline idempotent khi dữ liệu có cập nhật.
+- term: "3NF"
+  type: concept
+  def: >-
+    Dạng chuẩn 3 — cách chuẩn hoá bảng để không trùng lặp, tối ưu cho ghi (OLTP). Warehouse thường cố ý phi chuẩn hoá để đọc nhanh.
+- term: "Denormalization"
+  aliases: ["Denormalized"]
+  type: concept
+  def: >-
+    Cố ý gộp/lặp dữ liệu (nối sẵn dimension vào fact) để đọc nhanh, đổi lại trùng lặp và khó cập nhật. Chuẩn ở warehouse cột.
+- term: "Wide table"
+  type: concept
+  def: >-
+    Bảng rất nhiều cột, đã nối sẵn mọi thứ liên quan. Analyst không cần join; đổi lại trùng dữ liệu và khó giữ nhất quán.
+- term: "Nested/repeated fields"
+  aliases: ["Nested & repeated (STRUCT / ARRAY)"]
+  type: concept
+  def: >-
+    Cột kiểu STRUCT (bản ghi lồng) và ARRAY (mảng) trong BigQuery: một đơn hàng chứa sẵn danh sách dòng hàng trong một dòng, không cần join.
+- term: "Transaction fact"
+  type: concept
+  def: >-
+    Bảng fact một dòng mỗi sự kiện xảy ra (mỗi đơn, mỗi giao dịch). Chỉ append; trả lời "bao nhiêu trong khoảng thời gian".
+- term: "Periodic snapshot"
+  type: concept
+  def: >-
+    Bảng fact một dòng mỗi thực thể mỗi kỳ (số dư cuối ngày, tồn kho cuối tuần). Trả lời "tại thời điểm X tình hình ra sao".
+- term: "Accumulating snapshot"
+  type: concept
+  def: >-
+    Bảng fact một dòng mỗi quy trình, các cột mốc được cập nhật dần (đặt → thanh toán → giao). Trả lời "mất bao lâu từ A tới B".
+- term: "Factless fact"
+  type: concept
+  def: >-
+    Bảng fact không có số đo, chỉ ghi "sự kiện đã xảy ra" (sinh viên đăng ký môn). Đếm dòng chính là số đo.
+- term: "dim_date"
+  type: pattern
+  def: >-
+    Bảng ngày: một dòng mỗi ngày với thứ, tuần, tháng, quý, năm tài chính, ngày lễ. Dimension đầu tiên nên có trong mọi warehouse.
+- term: "Fiscal calendar"
+  type: concept
+  def: >-
+    Lịch tài chính của công ty (năm tài chính bắt đầu tháng 4, tuần bắt đầu thứ Hai…) — định nghĩa nằm trong dim_date để mọi báo cáo thống nhất.
+- term: "Holiday flag"
+  type: concept
+  def: >-
+    Cột đánh dấu ngày lễ/ngày làm việc trong dim_date; lịch âm không tính bằng công thức nên thường nạp từ file seed.
+- term: "dbt_date / dbt_utils.date_spine"
+  type: tool
+  def: >-
+    Macro dbt sinh chuỗi ngày liên tục (date spine) và các thuộc tính lịch — để xây dim_date không phải viết tay.
+- term: "Bridge table"
+  aliases: ["Many-to-many"]
+  type: pattern
+  def: >-
+    Bảng trung gian giải quan hệ nhiều-nhiều giữa fact và dimension (một đơn nhiều mã giảm giá), có cột weight để không nhân đôi số đo.
+- term: "Junk dimension"
+  type: pattern
+  def: >-
+    Gom nhiều cờ/thuộc tính lặt vặt (is_gift, channel, payment_method) vào một dimension nhỏ để fact chỉ giữ một khoá.
+- term: "Degenerate dimension"
+  type: concept
+  def: >-
+    Thuộc tính dạng dimension nhưng không có bảng riêng (số đơn hàng, mã vận đơn) — để thẳng trong fact.
+- term: "Aggregate table"
+  type: pattern
+  def: >-
+    Bảng tổng hợp sẵn (theo ngày, theo tháng) từ bảng nguyên tử để dashboard đọc nhanh và rẻ. Không thay thế bảng nguyên tử.
+- term: "Single source of truth"
+  type: concept
+  def: >-
+    Một nơi duy nhất định nghĩa và tính một metric/thực thể; mọi báo cáo đọc từ đó. Ngược lại là "3 con số doanh thu khác nhau".
+- term: "Point-in-time join"
+  type: pattern
+  def: >-
+    Join lấy giá trị dimension/feature đúng như tại thời điểm sự kiện xảy ra (không lấy giá trị hiện tại) — tránh rò rỉ tương lai vào training/báo cáo.

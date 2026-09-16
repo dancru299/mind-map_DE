@@ -7,6 +7,7 @@ tools:
   - NOT IN (bẫy NULL)
   - Fan-out
   - Cross join
+weight: 5
 ---
 
 Phần lớn số liệu sai trong warehouse là do join sai grain: join bảng đơn hàng (1 dòng/đơn) với bảng dòng hàng (nhiều dòng/đơn) rồi `SUM(order_total)` → tổng bị nhân lên theo số dòng hàng. Đây gọi là **fan-out**.

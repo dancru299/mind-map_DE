@@ -8,6 +8,7 @@ tools:
   - Freshness
   - Retry & backoff
   - Alerting
+weight: 4
 ---
 
 Chạy theo giờ (cron) hay chạy khi dữ liệu upstream sẵn sàng (dataset/asset trigger)? Cách thứ hai ít lỗi hơn nhưng khó nghĩ hơn.

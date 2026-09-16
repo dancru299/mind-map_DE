@@ -7,6 +7,7 @@ tools:
   - Git
   - VPC
   - IAM
+weight: 2
 ---
 
 SSH vào máy, đọc log, cron, quyền file, biến môi trường; Git flow cho code pipeline; hiểu VPC/firewall để biết vì sao Airflow không kết nối được DB.

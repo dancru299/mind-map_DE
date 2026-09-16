@@ -6,6 +6,7 @@ tools:
   - cleanup.policy=compact
   - Tombstone
   - Tiered storage
+weight: 3
 ---
 
 Kafka không phải hàng đợi xoá-sau-khi-đọc: message nằm trong log cho tới khi hết hạn, **bất kể đã có ai đọc hay chưa**. Nhờ vậy nhiều group đọc độc lập và replay được.

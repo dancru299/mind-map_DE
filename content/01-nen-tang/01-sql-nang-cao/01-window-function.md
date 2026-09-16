@@ -8,6 +8,7 @@ tools:
   - SUM() OVER
   - ROWS BETWEEN
   - QUALIFY
+weight: 5
 ---
 
 `GROUP BY` gộp nhiều dòng thành một. Window function thì **giữ nguyên từng dòng** nhưng cho phép mỗi dòng nhìn sang các dòng khác trong cùng "cửa sổ": xếp hạng, so với kỳ trước, cộng dồn, trung bình trượt.

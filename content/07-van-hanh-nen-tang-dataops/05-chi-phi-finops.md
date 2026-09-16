@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   Ở công ty thường, DE thường là người duy nhất hiểu hoá đơn cloud data và bị hỏi thẳng 'sao tháng
   này tăng 40%'. Ở big tech, chi phí được quản lý ở tầng tổ chức.
+weight: 4
 ---
 
 - Warehouse: partition + cluster đúng, tránh SELECT *, materialize bảng hay dùng, giới hạn byte quét theo user, dùng slot/warehouse size hợp lý.

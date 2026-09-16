@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
-import { mkdtempSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { buildTree, listMarkdownFiles, parseMarkdown, readRoute, splitPrefix, type RawNode } from '../plugins/build-tree'
+import { buildTree, listMarkdownFiles, parseMarkdown, readGlossary, readRoute, splitPrefix, uncoveredTools, type RawNode } from '../plugins/build-tree'
 
 const DIR = join(__dirname, '..', 'content')
 
@@ -61,5 +61,29 @@ describe('lo-trinh.yaml', () => {
     const dir = mkdtempSync(join(tmpdir(), 'route-'))
     writeFileSync(join(dir, 'lo-trinh.yaml'), 'title: t\nphases:\n  - name: a\n    steps:\n      - id: khong/ton-tai\n')
     expect(() => readRoute(dir, root)).toThrow(/khong\/ton-tai/)
+  })
+})
+
+describe('trọng số', () => {
+  it('mọi mục lá khai báo weight rõ ràng (1–5); nhánh không cần', () => {
+    for (const f of listMarkdownFiles(DIR)) {
+      if (f.endsWith('_index.md')) continue
+      const raw = readFileSync(f, 'utf8')
+      expect(/^weight: [1-5]$/m.test(raw), `${f.replace(DIR + '/', '')} thiếu "weight: 1..5"`).toBe(true)
+    }
+  })
+  it('weight ngoài 1–5 bị từ chối', () => {
+    expect(() => parseMarkdown('---\ntitle: A\nweight: 7\n---\nbody', 'x.md')).toThrow(/weight/)
+    expect(parseMarkdown('---\ntitle: A\n---\nbody', 'x.md').weight).toBe(3)
+  })
+})
+
+describe('glossary', () => {
+  it('mọi chip "tools" trong content đều có định nghĩa', () => {
+    const missing = uncoveredTools(buildTree(DIR), readGlossary(DIR))
+    expect(missing, `chưa có định nghĩa: ${missing.slice(0, 10).join(' | ')}${missing.length > 10 ? ' …' : ''}`).toEqual([])
+  })
+  it('entry có type hợp lệ và def ngắn gọn (≤ 60 từ)', () => {
+    for (const g of readGlossary(DIR)) expect(g.def.split(/\s+/).length, `"${g.term}" quá dài`).toBeLessThanOrEqual(60)
   })
 })

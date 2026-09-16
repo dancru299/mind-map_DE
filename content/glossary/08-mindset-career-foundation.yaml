@@ -1,0 +1,191 @@
+- term: "5 Whys"
+  type: practice
+  def: >-
+    Hỏi "vì sao" năm lần liên tiếp để từ yêu cầu/triệu chứng đi tới bài toán thật hoặc nguyên nhân gốc.
+- term: "Acceptance criteria"
+  aliases: ["Definition of done"]
+  type: practice
+  def: >-
+    Tiêu chí "làm xong trông như thế nào" chốt trước khi bắt đầu (bảng X có cột Y, khớp kế toán ±0,5%, sẵn sàng trước 7h).
+- term: "Business metric"
+  type: concept
+  def: >-
+    Con số nghiệp vụ dùng để ra quyết định (doanh thu, retention, conversion). DE phải hiểu tính từ đâu để mô hình bảng đúng.
+- term: "Revenue / GMV / Net revenue"
+  type: metric
+  def: >-
+    GMV: tổng giá trị đơn đặt; doanh thu thuần: sau hoàn/huỷ/giảm giá; doanh thu ghi nhận: theo chuẩn kế toán. Ba số khác nhau, hỏi rõ số nào.
+- term: "Retention / Churn"
+  type: metric
+  def: >-
+    Retention: tỷ lệ người dùng quay lại sau N ngày/tháng; churn: tỷ lệ rời bỏ. Phải chốt "quay lại" nghĩa là làm gì và cohort theo gì.
+- term: "Funnel / Conversion"
+  type: metric
+  def: >-
+    Funnel: chuỗi bước (xem → giỏ → thanh toán) và tỷ lệ đi qua mỗi bước; conversion = tỷ lệ tới đích. Mẫu số là phiên, người hay thiết bị?
+- term: "Cohort"
+  type: concept
+  def: >-
+    Nhóm người dùng cùng đặc điểm thời gian (đăng ký tháng 6) để theo dõi hành vi theo tuổi đời — nền của phân tích retention.
+- term: "Stakeholder"
+  type: concept
+  def: >-
+    Người có lợi ích/ảnh hưởng với việc bạn làm: analyst, DS, team app, quản lý. Mỗi nhóm cần ngôn ngữ và cách làm việc khác nhau.
+- term: "Handoff"
+  type: practice
+  def: >-
+    Bàn giao rõ ràng giữa các team/bước: cái gì đã xong, ai owner tiếp, docs ở đâu — để không rơi vào khoảng trống "tưởng người kia làm".
+- term: "Office hours"
+  type: practice
+  def: >-
+    Khung giờ cố định hằng tuần để người khác đến hỏi về dữ liệu, thay cho câu hỏi rải rác cả ngày trên chat.
+- term: "Tech debt"
+  type: concept
+  def: >-
+    Nợ kỹ thuật: giải pháp tạm để đi nhanh, phải trả sau bằng refactor. Vay có chủ đích và ghi lại thì tốt; chất đống không ghi thì nguy.
+- term: "Cost of delay"
+  type: concept
+  def: >-
+    Việc này chậm một tuần thì mất gì? Cách xếp ưu tiên theo giá trị thời gian thay vì theo ai kêu to.
+- term: "MVP"
+  type: concept
+  def: >-
+    Minimum Viable Product — phiên bản nhỏ nhất đủ dùng để học từ người dùng thật trước khi xây đầy đủ.
+- term: "Refactor"
+  type: practice
+  def: >-
+    Sửa cấu trúc code/model cho sạch mà không đổi hành vi. Làm khi chạm vào phần đó, không "dọn cả kho" một lúc.
+- term: "Premature optimization"
+  type: concept
+  def: >-
+    Tối ưu trước khi có số đo hoặc trước khi có vấn đề — tốn công cho thứ có thể không bao giờ cần (partition bảng 5 GB, Spark cho 500 MB).
+- term: "Cost awareness"
+  aliases: ["Unit economics"]
+  type: practice
+  def: >-
+    Biết giá của mọi lựa chọn (chạy mỗi giờ tốn thêm bao nhiêu, streaming gấp mấy lần batch) và chi phí trên mỗi đơn vị (mỗi query, mỗi GB).
+- term: "Measure before/after"
+  aliases: ["Baseline"]
+  type: practice
+  def: >-
+    Ghi số hiện tại (baseline) trước khi đổi, đo lại sau khi đổi — không có baseline thì không chứng minh được "tốt hơn".
+- term: "Mean / median / percentile"
+  type: concept
+  def: >-
+    Trung bình bị kéo bởi outlier; median là giá trị giữa; percentile (p90, p99) cho biết "90% trường hợp dưới X" — ngôn ngữ của SLA.
+- term: "Standard deviation"
+  type: concept
+  def: >-
+    Độ phân tán quanh trung bình; z-score = lệch bao nhiêu độ lệch chuẩn — dùng đặt ngưỡng cảnh báo bất thường.
+- term: "Distribution"
+  type: concept
+  def: >-
+    Hình dạng phân bố giá trị của một cột (đối xứng, lệch, hai đỉnh). Nhìn phân phối trước khi tin trung bình.
+- term: "Sampling"
+  type: concept
+  def: >-
+    Lấy mẫu để ước lượng nhanh (null rate, phân phối) thay vì quét hết. Đủ cho tỷ lệ, không đủ để tìm dòng trùng cụ thể.
+- term: "Seasonality"
+  type: concept
+  def: >-
+    Biến động theo chu kỳ (thứ trong tuần, cuối tháng, Tết). Cảnh báo phải so với cùng kỳ, không so với hôm qua.
+- term: "UTC"
+  type: concept
+  def: >-
+    Giờ chuẩn quốc tế, không DST. Lưu mọi timestamp bằng UTC, chuyển sang giờ địa phương khi hiển thị/nhóm theo ngày.
+- term: "TIMESTAMP vs DATETIME"
+  type: concept
+  def: >-
+    TIMESTAMP là một thời điểm tuyệt đối (có múi giờ); DATETIME là giờ trên đồng hồ không múi giờ. Trộn hai kiểu là lệch 7 giờ âm thầm.
+- term: "Timezone conversion"
+  type: concept
+  def: >-
+    Chuyển UTC sang múi giờ báo cáo trước khi lấy ngày (DATE(ts, 'Asia/Ho_Chi_Minh')); làm sau là đơn 1h sáng rơi nhầm ngày.
+- term: "DECIMAL vs FLOAT"
+  type: concept
+  def: >-
+    FLOAT là số xấp xỉ nhị phân (0,1 + 0,2 ≠ 0,3); DECIMAL/NUMERIC chính xác — bắt buộc cho tiền.
+- term: "Unicode / encoding"
+  type: concept
+  def: >-
+    Cách chuỗi được mã hoá thành byte (UTF-8, CP1252). Đọc sai encoding ra "Nguyá»…n"; NFC/NFD làm hai chuỗi nhìn giống nhau nhưng không bằng nhau.
+- term: "NULL semantics"
+  type: concept
+  def: >-
+    NULL là "không biết": NULL = NULL không đúng, NULL + 1 = NULL, AVG bỏ qua NULL, NOT IN với NULL trả rỗng. Chuẩn hoá NULL/''/'N/A' ở staging.
+- term: "Data Engineer"
+  type: role
+  def: >-
+    Người xây và vận hành hệ thống đưa dữ liệu từ nguồn tới nơi dùng được: ingestion, pipeline, storage, orchestration, chất lượng.
+- term: "Analytics Engineer"
+  type: role
+  def: >-
+    Người làm lớp transform (dbt), modeling, metric — giữa DE và analyst. Vai trò sinh ra cùng Modern Data Stack.
+- term: "Platform Engineer"
+  type: role
+  def: >-
+    Data Platform Engineer — xây và vận hành hạ tầng (Airflow, K8s, warehouse, catalog) cho DE và analyst khác dùng.
+- term: "Data Analyst"
+  type: role
+  def: >-
+    Người dùng SQL + BI trả lời câu hỏi nghiệp vụ; khách hàng chính của marts và thường hiểu nghiệp vụ hơn DE.
+- term: "Data Scientist"
+  type: role
+  def: >-
+    Người làm thống kê, thí nghiệm, model; cần dữ liệu lịch sử đầy đủ, point-in-time đúng, feature nhất quán.
+- term: "Career ladder"
+  type: concept
+  def: >-
+    Thang bậc nghề (junior → senior → staff/lead) với kỳ vọng rõ ở mỗi bậc; big tech có ladder chính thức, công ty thường mờ hơn.
+- term: "Scope"
+  aliases: ["Influence", "Technical leadership", "Roadmap", "Mentoring"]
+  type: concept
+  def: >-
+    Phạm vi ảnh hưởng — thứ tăng khi lên staff/lead: từ task → hệ thống → nhiều team; kèm ảnh hưởng không cần quyền, roadmap 1–2 năm, mentoring.
+- term: "SQL interview"
+  aliases: ["Modeling case", "Behavioral"]
+  type: concept
+  def: >-
+    Ba phần phỏng vấn DE: SQL live (window, dedup, gaps), case modeling (grain, fact/dim, SCD), và câu hỏi hành vi (xử lý sự cố, làm việc với stakeholder).
+- term: "Portfolio project"
+  aliases: ["Side project"]
+  type: practice
+  def: >-
+    Dự án end-to-end với dữ liệu công khai (ingest → warehouse → dbt → dashboard, có test, backfill) để chứng minh kỹ năng và thử tool mới không rủi ro.
+- term: "Fundamentals of Data Engineering"
+  type: book
+  def: >-
+    Sách của Reis & Housley (2022): vòng đời dữ liệu toàn cảnh, không gắn tool. Cuốn nên đọc đầu tiên.
+- term: "Designing Data-Intensive Applications"
+  type: book
+  def: >-
+    Sách của Kleppmann (2017): lưu trữ, replication, partition, stream, nhất quán — nền để hiểu vì sao Kafka/Spark/warehouse thiết kế như vậy.
+- term: "The Data Warehouse Toolkit"
+  type: book
+  def: >-
+    Sách của Kimball & Ross: dimensional modeling từ gốc, với case theo ngành. Đọc chương 1–5 và ngành liên quan.
+- term: "Official docs"
+  type: practice
+  def: >-
+    Tài liệu chính thức của tool — tốt hơn hầu hết khoá học và luôn cập nhật; đọc phần concepts/best practices trước API.
+- term: "Engineering blogs"
+  aliases: ["Conference talks"]
+  type: practice
+  def: >-
+    Blog kỹ thuật (Netflix, Airbnb, Uber, Shopify) và talk hội nghị (Data Council, Data+AI Summit): quyết định thật ở quy mô thật — học, không copy.
+- term: "Changelog"
+  type: practice
+  def: >-
+    Đọc ghi chú phát hành của tool đang dùng mỗi bản lớn để biết tính năng mới và thay đổi phá vỡ trước khi nâng cấp.
+- term: "Reading source code"
+  type: practice
+  def: >-
+    Đọc mã nguồn tool (dbt-utils, operator Airflow) và PR của đồng nghiệp — cách học pattern mà tài liệu không dạy.
+- term: "Learning log"
+  type: practice
+  def: >-
+    Ghi mỗi tuần một dòng "học được gì, từ đâu"; sau 6 tháng nhìn lại thấy rõ hướng đi và lỗ hổng.
+- term: "PR description"
+  type: practice
+  def: >-
+    Mô tả pull request: vì sao đổi, đổi gì, ảnh hưởng dữ liệu (bảng nào, cần backfill/full refresh không), đã kiểm tra thế nào.

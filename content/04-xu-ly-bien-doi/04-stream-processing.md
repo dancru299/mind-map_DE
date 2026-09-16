@@ -13,6 +13,7 @@ tools:
 bigtech: >-
   Big tech: streaming là mặc định cho ads, fraud, recommendation. Công ty thường: chỉ cần khi có bài
   toán latency giây thật sự — hỏi kỹ trước khi dựng vì chi phí vận hành cao.
+weight: 4
 ---
 
 Khác batch ở chỗ dữ liệu không có 'kết thúc'. Phải nghĩ về thời gian: event time vs processing time, window, watermark (đợi dữ liệu trễ bao lâu), state (nhớ gì giữa các event), và exactly-once.

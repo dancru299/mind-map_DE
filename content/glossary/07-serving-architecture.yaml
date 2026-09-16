@@ -1,0 +1,245 @@
+- term: "BI"
+  type: concept
+  def: >-
+    Business Intelligence — dashboard, báo cáo, explore dữ liệu cho người ra quyết định. Lớp tiêu thụ phổ biến nhất của warehouse.
+- term: "Looker"
+  aliases: ["LookML"]
+  type: tool
+  def: >-
+    BI của Google với LookML — lớp mô hình hoá (metric, join) bằng code, để mọi dashboard dùng chung định nghĩa.
+- term: "Power BI"
+  type: tool
+  def: >-
+    BI của Microsoft, phổ biến ở doanh nghiệp; có semantic model (dataset) và DAX; tích hợp Fabric.
+- term: "Tableau"
+  type: tool
+  def: >-
+    BI mạnh về trực quan hoá kéo-thả; giá cao; thuộc Salesforce.
+- term: "Metabase"
+  type: tool
+  def: >-
+    BI mã nguồn mở đơn giản, người không kỹ thuật dùng được; startup hay chọn.
+- term: "Superset"
+  type: tool
+  def: >-
+    Apache Superset — BI mã nguồn mở từ Airbnb, nhiều loại chart, hợp team kỹ thuật.
+- term: "Extract vs live"
+  type: concept
+  def: >-
+    Hai chế độ BI: extract (copy dữ liệu vào cache của tool, nhanh, không tươi) và live (query warehouse mỗi lần, tươi, tốn).
+- term: "Semantic layer"
+  type: concept
+  def: >-
+    Lớp định nghĩa metric/dimension/join ở một chỗ (MetricFlow, Cube, LookML) để BI, notebook, AI cùng đọc — hết "3 con số doanh thu".
+- term: "MetricFlow"
+  type: tool
+  def: >-
+    Engine semantic layer của dbt: khai báo metric trong YAML, dbt sinh SQL đúng cho mọi cách cắt.
+- term: "Cube"
+  type: tool
+  def: >-
+    Semantic layer mã nguồn mở độc lập tool BI: định nghĩa metric, cache, API cho app và BI.
+- term: "Metric definition"
+  type: concept
+  def: >-
+    Định nghĩa bằng văn bản một metric: công thức, mẫu số, thời điểm, ngoại lệ, owner. Nằm trong docs/semantic layer, không trong đầu analyst.
+- term: "Reverse ETL"
+  aliases: ["Operational analytics", "CRM sync"]
+  type: concept
+  def: >-
+    Đẩy dữ liệu từ warehouse ngược về hệ thống vận hành (CRM, ads, app) để dùng trong hoạt động hằng ngày, không chỉ báo cáo.
+- term: "Hightouch"
+  type: tool
+  def: >-
+    Công cụ reverse ETL SaaS: chọn bảng/model dbt, map sang Salesforce/HubSpot/ads, đồng bộ theo lịch.
+- term: "Census"
+  type: tool
+  def: >-
+    Công cụ reverse ETL SaaS tương tự Hightouch.
+- term: "Feature store"
+  type: concept
+  def: >-
+    Kho feature cho ML: tính một lần, dùng nhất quán khi train (offline) và khi serve (online), tránh training/serving skew.
+- term: "Feast"
+  type: tool
+  def: >-
+    Feature store mã nguồn mở: đăng ký feature, offline store (warehouse) + online store (Redis), point-in-time join.
+- term: "Training/serving skew"
+  type: concept
+  def: >-
+    Feature lúc train tính khác lúc serve (code khác, dữ liệu khác) → model chạy thật kém hơn lúc test. Feature store giải bài này.
+- term: "Vertex AI"
+  type: tool
+  def: >-
+    Nền tảng ML managed của Google Cloud: train, deploy, feature store, pipeline, vector search.
+- term: "SageMaker"
+  type: tool
+  def: >-
+    Nền tảng ML managed của AWS, tương đương Vertex AI.
+- term: "ML Engineer"
+  type: role
+  def: >-
+    Người đưa model vào production: deploy, giám sát, retrain. DE cung cấp dữ liệu và feature; MLE lo model.
+- term: "RAG"
+  aliases: ["RAG pipeline"]
+  type: concept
+  def: >-
+    Retrieval-Augmented Generation — LLM trả lời dựa trên tài liệu được tìm ra (embedding + vector search) thay vì chỉ trí nhớ của model. Phần pipeline tài liệu là việc của DE.
+- term: "Embedding"
+  type: concept
+  def: >-
+    Vector số biểu diễn nghĩa của đoạn text/ảnh; đoạn giống nhau có vector gần nhau — nền của tìm kiếm ngữ nghĩa và RAG.
+- term: "Vector database"
+  aliases: ["Vector DB"]
+  type: tool
+  def: >-
+    Kho lưu và tìm vector gần nhất (pgvector, Pinecone, Weaviate, vector search của BigQuery/Snowflake). Là index, không phải nguồn sự thật.
+- term: "Chunking"
+  type: pattern
+  def: >-
+    Cắt tài liệu thành đoạn 200–800 token có overlap, giữ metadata (nguồn, quyền) trước khi embedding. Quyết định lớn tới chất lượng RAG.
+- term: "Evaluation dataset"
+  type: concept
+  def: >-
+    Bộ câu hỏi–đáp án mẫu để đo chất lượng RAG/LLM khi đổi model, chunking, prompt. Không có thì mọi thay đổi là đoán.
+- term: "AI-assisted"
+  type: concept
+  def: >-
+    Dùng AI để viết SQL/dbt, tìm bất thường, giải thích plan — DE dịch chuyển từ "viết pipeline" sang "thiết kế, kiểm chứng, quản trị".
+- term: "Self-service"
+  aliases: ["Self-service BI"]
+  type: concept
+  def: >-
+    Người dùng tự trả lời câu hỏi bằng dashboard/explore/semantic layer mà không cần DE. Cần bảng certified và định nghĩa metric chung.
+- term: "Data literacy"
+  type: concept
+  def: >-
+    Khả năng đọc hiểu số của người dùng: metric nghĩa gì, mẫu số, vì sao hai dashboard khác nhau. Team data phải dạy, không chỉ giao dashboard.
+- term: "Lambda"
+  aliases: ["Lambda architecture"]
+  type: pattern
+  def: >-
+    Kiến trúc hai đường: batch (chính xác, chậm) + speed layer (nhanh, xấp xỉ), ghép kết quả. Đúng nhưng phải viết logic hai lần.
+- term: "Kappa"
+  aliases: ["Kappa architecture"]
+  type: pattern
+  def: >-
+    Kiến trúc một đường streaming cho tất cả; cần tính lại thì replay log. Đơn giản hơn Lambda nhưng cần engine streaming mạnh và log giữ lâu.
+- term: "Batch layer"
+  type: concept
+  def: >-
+    Đường batch trong Lambda: xử lý lại toàn bộ dữ liệu định kỳ, cho kết quả chính xác.
+- term: "Speed layer"
+  type: concept
+  def: >-
+    Đường streaming trong Lambda: xử lý dữ liệu mới nhất cho kết quả nhanh, xấp xỉ, bị batch layer ghi đè sau.
+- term: "Latency requirement"
+  type: concept
+  def: >-
+    Yêu cầu độ trễ: người dùng cần dữ liệu trong bao lâu. Câu hỏi quyết định batch hay streaming; hỏi trước khi chọn tool.
+- term: "Central data team"
+  type: concept
+  def: >-
+    Một team data phục vụ mọi phòng ban: nhất quán, dễ quản lý; thành nút thắt khi công ty lớn. Phù hợp dưới ~200 người.
+- term: "Platform team"
+  type: concept
+  def: >-
+    Team xây và vận hành nền chung (orchestrator, warehouse, catalog, CI) để DE các domain đứng lên; có ở big tech và data mesh.
+- term: "SaaS sprawl"
+  type: concept
+  def: >-
+    Quá nhiều tool SaaS mỗi cái một hoá đơn, một login, một điểm hỏng — mặt trái của Modern Data Stack.
+- term: "Enterprise"
+  type: concept
+  def: >-
+    Bối cảnh tập đoàn lớn ngoài tech (ngân hàng, bán lẻ, đa ngành): dữ liệu lớn nhưng tooling doanh nghiệp, legacy nhiều, governance nặng, đổi chậm.
+- term: "Internal tooling"
+  type: concept
+  def: >-
+    Tool tự xây trong big tech (thay Airflow, Spark, catalog…); mạnh nhưng kỹ năng không mang ra ngoài được.
+- term: "Scale"
+  type: concept
+  def: >-
+    Quy mô dữ liệu/người dùng. Big tech: petabyte, bài toán là hiệu năng phân tán. Công ty thường: GB–TB, bài toán là dữ liệu bẩn và ownership.
+- term: "Process"
+  type: concept
+  def: >-
+    Quy trình làm việc: design doc, review, SLA, on-call, postmortem. Big tech nặng và chậm nhưng an toàn; công ty thường linh hoạt nhưng dễ nợ.
+- term: "System design"
+  type: concept
+  def: >-
+    Thiết kế hệ thống từ yêu cầu: SLA → ước lượng → phương án → failure mode → migration. Cũng là khung phỏng vấn cho DE senior.
+- term: "Requirements"
+  aliases: ["Non-functional requirements"]
+  type: concept
+  def: >-
+    Yêu cầu chức năng (làm gì) và phi chức năng (nhanh, đúng, sẵn sàng, giữ bao lâu). Phi chức năng quyết định kiến trúc và hiếm khi được nói ra.
+- term: "Accuracy"
+  type: concept
+  def: >-
+    Yêu cầu về độ đúng: khớp từng đồng hay ±2% để nhìn xu hướng — quyết định mức đối chiếu, exactly-once, test.
+- term: "Availability"
+  type: concept
+  def: >-
+    Yêu cầu về sẵn sàng: hệ thống/báo cáo hỏng thì chịu được bao lâu — quyết định on-call, retry, backup.
+- term: "Back-of-envelope"
+  aliases: ["Rows × bytes", "Cost estimate", "Growth rate", "Throughput"]
+  type: practice
+  def: >-
+    Ước lượng nhẩm: dòng/ngày × byte/dòng → GB/năm, event/giây, $/tháng. Đúng cỡ (order of magnitude) là đủ để chọn tool.
+- term: "Design doc"
+  aliases: ["RFC"]
+  type: practice
+  def: >-
+    Tài liệu một trang trước khi xây: bối cảnh, yêu cầu, phương án (≥ 2), đề xuất và vì sao, rủi ro, rollback. RFC là bản mở lấy ý kiến rộng.
+- term: "ADR"
+  type: practice
+  def: >-
+    Architecture Decision Record — một trang mỗi quyết định lớn: bối cảnh, quyết định, hệ quả. Để sau 1 năm còn biết vì sao chọn Airflow.
+- term: "Alternatives considered"
+  aliases: ["Trade-off", "Trade-off matrix"]
+  type: practice
+  def: >-
+    Phần giá trị nhất của design doc: các phương án khác và lý do không chọn, thường trình bày bằng ma trận phương án × tiêu chí.
+- term: "Reversibility"
+  aliases: ["Reversible vs irreversible"]
+  type: concept
+  def: >-
+    Quyết định đảo ngược được (tên cột, lịch chạy) → làm nhanh, sửa sau. Không đảo ngược được (grain, chọn warehouse) → chậm lại, viết doc, hỏi.
+- term: "Review"
+  type: practice
+  def: >-
+    Người khác đọc design/code trước khi xây/merge. Review thiết kế rẻ hơn review code; review code rẻ hơn sửa production.
+- term: "Failure mode"
+  type: concept
+  def: >-
+    Cách một thành phần có thể hỏng (nguồn đổi schema, file trễ, OOM). Liệt kê trước kèm cách phát hiện và khôi phục.
+- term: "Blast radius"
+  type: concept
+  def: >-
+    Phạm vi thiệt hại khi một thứ hỏng. Thiết kế để một nguồn lỗi không kéo cả DAG, một bảng sai không chặn 30 bảng khác.
+- term: "Graceful degradation"
+  type: pattern
+  def: >-
+    Khi hỏng vẫn phục vụ được ở mức giảm (dashboard hiện dữ liệu hôm qua kèm nhãn "chưa cập nhật") thay vì trống trơn.
+- term: "Dead letter queue"
+  type: pattern
+  def: >-
+    Hàng đợi/bảng riêng cho bản ghi không xử lý được (parse lỗi, schema sai); pipeline tiếp tục, ai đó xem sau.
+- term: "Circuit breaker"
+  type: pattern
+  def: >-
+    Ngừng gọi một dịch vụ đang lỗi liên tục trong một thời gian thay vì retry mãi — tránh làm nó tệ hơn và tự tiêu tài nguyên.
+- term: "Strangler pattern"
+  type: pattern
+  def: >-
+    Thay hệ thống cũ từng phần: chuyển từng nhóm người dùng/bảng sang hệ thống mới, cũ co dần tới khi tắt được.
+- term: "Dual-write / dual-run"
+  aliases: ["Parallel validation"]
+  type: pattern
+  def: >-
+    Chạy hệ thống mới song song với cũ, đối chiếu kết quả tự động mỗi ngày tới khi khớp N ngày liên tiếp rồi mới chuyển.
+- term: "Cutover"
+  type: concept
+  def: >-
+    Thời điểm chuyển người dùng từ hệ thống cũ sang mới; nên theo nhóm, có ngày rõ và cách quay lại.

@@ -7,6 +7,7 @@ tools:
   - max_active_runs
   - priority_weight
   - Executor (Celery / Kubernetes)
+weight: 4
 ---
 
 Airflow có nhiều nấc giới hạn song song; task chỉ chạy khi qua được tất cả:

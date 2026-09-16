@@ -7,6 +7,7 @@ tools:
   - Small files problem
   - maxRecordsPerFile
   - OPTIMIZE / compaction
+weight: 4
 ---
 
 Spark ghi **một file cho mỗi task** (mỗi partition trong bộ nhớ). 800 partition × 30 giá trị `partitionBy("dt")` = 24.000 file nhỏ cho một ngày. Đọc lại phải mở 24.000 file: metadata listing chậm hơn cả đọc dữ liệu. Đây là *small files problem* — nguồn số một của data lake chậm.

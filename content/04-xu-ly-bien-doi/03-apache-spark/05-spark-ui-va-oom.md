@@ -7,6 +7,7 @@ tools:
   - Spill (memory / disk)
   - GC time
   - executor.memoryOverhead
+weight: 3
 ---
 
 Spark UI (port 4040 khi chạy, History Server sau đó; Databricks/EMR có sẵn) là nơi trả lời "job chậm ở đâu". Đường đi khi debug:

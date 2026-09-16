@@ -8,6 +8,7 @@ tools:
   - Elementary
   - Freshness
   - Volume anomaly
+weight: 3
 ---
 
 Tool observability tự học baseline và cảnh báo khi freshness, volume, schema hay distribution lệch — không cần viết từng test. Monte Carlo, Bigeye, Metaplane… là SaaS; Elementary là mã nguồn mở trên dbt.

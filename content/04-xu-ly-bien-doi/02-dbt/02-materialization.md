@@ -7,6 +7,7 @@ tools:
   - incremental
   - ephemeral
   - materialized_view
+weight: 5
 ---
 
 Materialization là cách dbt biến `SELECT` của bạn thành đối tượng trong warehouse:

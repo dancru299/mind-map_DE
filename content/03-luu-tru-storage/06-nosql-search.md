@@ -8,6 +8,7 @@ tools:
   - Bigtable
   - Elasticsearch
   - Redis
+weight: 2
 ---
 
 - Key-value / document (Redis, DynamoDB, MongoDB): serving layer cho app hoặc nguồn dữ liệu cần flatten.

@@ -7,6 +7,7 @@ tools:
   - catchup
   - start_date
   - "{{ ds }}"
+weight: 5
 ---
 
 Airflow không hỏi "bây giờ là mấy giờ" mà hỏi "**lần chạy này xử lý khoảng dữ liệu nào**". Mỗi DAG run có `data_interval_start` và `data_interval_end`; `logical_date` (tên cũ `execution_date`) = `data_interval_start`. Với lịch `@daily`, run cho ngày 2025-06-01 được **kích hoạt vào đầu ngày 2025-06-02** — sau khi khoảng dữ liệu đã kết thúc.

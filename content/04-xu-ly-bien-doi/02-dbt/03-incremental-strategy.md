@@ -8,6 +8,7 @@ tools:
   - insert_overwrite
   - microbatch
   - --full-refresh
+weight: 5
 ---
 
 Model incremental cần trả lời hai câu: **lấy dòng mới bằng cách nào** (điều kiện trong `is_incremental()`), và **ghi vào bảng đích thế nào** (strategy).

@@ -8,6 +8,7 @@ tools:
   - Golden record
   - Data mesh
   - Data product
+weight: 3
 ---
 
 - Ownership: mỗi bảng có một team chịu trách nhiệm về đúng/sai và SLA. Không có owner thì không có ai sửa.

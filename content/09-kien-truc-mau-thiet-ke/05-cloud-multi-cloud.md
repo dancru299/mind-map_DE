@@ -9,6 +9,7 @@ tools:
   - Synapse
   - Fabric
   - Databricks
+weight: 3
 ---
 
 - GCP: BigQuery, Dataflow, Pub/Sub, Composer, Dataproc, Dataplex.

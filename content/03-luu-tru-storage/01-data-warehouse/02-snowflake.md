@@ -8,6 +8,7 @@ tools:
   - Time Travel / Zero-copy clone
   - Dynamic table
   - Snowpipe
+weight: 3
 ---
 
 Snowflake tách ba tầng: storage (S3/GCS/Azure, nén cột, micro-partition), compute (*virtual warehouse* — cluster tính toán bật/tắt độc lập), và cloud services (metadata, optimizer, auth). Nhiều warehouse ảo đọc cùng dữ liệu mà không tranh nhau: một cho ETL, một cho BI, một cho data science.

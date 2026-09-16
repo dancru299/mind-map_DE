@@ -9,6 +9,7 @@ tools:
   - Runbook
   - Postmortem
   - SLO
+weight: 4
 ---
 
 Giám sát ba lớp: hạ tầng (Airflow scheduler sống không), pipeline (task fail, chạy quá lâu), dữ liệu (freshness, volume). Cảnh báo về Slack/PagerDuty với đủ ngữ cảnh để hành động.

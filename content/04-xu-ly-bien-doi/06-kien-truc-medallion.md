@@ -8,6 +8,7 @@ tools:
   - Staging
   - Marts
   - Raw layer
+weight: 5
 ---
 
 - Bronze (raw): bản sao nguồn, không sửa gì. Để làm lại khi cần.

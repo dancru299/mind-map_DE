@@ -1,0 +1,326 @@
+- term: "Data quality"
+  type: concept
+  def: >-
+    Mức độ dữ liệu đúng, đủ, tươi, nhất quán so với kỳ vọng. Đo bằng test tự động ở ranh giới các lớp; không có test thì "sếp là người phát hiện".
+- term: "Great Expectations"
+  type: tool
+  def: >-
+    Framework Python kiểm tra chất lượng dữ liệu bằng "expectation" (cột không null, giá trị trong khoảng…), sinh báo cáo; hợp pipeline Python/Spark.
+- term: "Soda"
+  type: tool
+  def: >-
+    Công cụ kiểm tra chất lượng dữ liệu bằng file YAML (SodaCL), chạy trên warehouse, có bản cloud để theo dõi.
+- term: "Elementary"
+  type: tool
+  def: >-
+    Gói dbt mã nguồn mở thêm giám sát (anomaly, freshness, volume) và dashboard chất lượng trên kết quả test dbt.
+- term: "Monte Carlo"
+  type: tool
+  def: >-
+    Nền tảng data observability SaaS: tự học baseline và cảnh báo freshness/volume/schema bất thường, kèm lineage.
+- term: "Bigeye"
+  type: tool
+  def: >-
+    Nền tảng data observability SaaS, tương tự Monte Carlo, mạnh về metric tuỳ chỉnh và ngưỡng tự động.
+- term: "Metaplane"
+  type: tool
+  def: >-
+    Công cụ data observability nhẹ, tích hợp dbt/Snowflake/BigQuery, hợp team nhỏ.
+- term: "Anomaly detection"
+  type: concept
+  def: >-
+    Tự phát hiện giá trị/số dòng/độ trễ lệch khỏi mẫu thường ngày (theo baseline lịch sử, có tính mùa vụ) thay vì đặt ngưỡng tay.
+- term: "Volume anomaly"
+  type: concept
+  def: >-
+    Số dòng hôm nay lệch bất thường so với các ngày trước — dấu hiệu nguồn thiếu dữ liệu hoặc gửi trùng.
+- term: "Reconciliation"
+  type: practice
+  def: >-
+    Đối chiếu tổng/số dòng giữa hai hệ thống độc lập (warehouse vs kế toán, mart vs nguồn) để chứng minh dữ liệu đúng. Đặt thành test tự động.
+- term: "Sanity check"
+  type: practice
+  def: >-
+    Kiểm tra nhanh "có hợp lý không" trước khi tin số: số dòng, tổng, null rate, min/max — bắt lỗi thô trong vài giây.
+- term: "Assertion"
+  type: concept
+  def: >-
+    Câu khẳng định phải đúng tại một điểm trong pipeline (số dòng ra ≥ 0,9 × số dòng vào); sai là dừng ngay, không đi tiếp.
+- term: "Fail loudly"
+  type: practice
+  def: >-
+    Khi có lỗi thì dừng và báo rõ, thay vì nuốt lỗi và tiếp tục với dữ liệu sai. Pipeline đỏ tốt hơn dashboard sai.
+- term: "Trust but verify"
+  type: practice
+  def: >-
+    Tin tài liệu/lời nói về nguồn, nhưng kiểm chứng bằng dữ liệu thật (SELECT DISTINCT, đếm, đối chiếu) trước khi xây trên đó.
+- term: "Defensive data thinking"
+  type: practice
+  def: >-
+    Tư duy giả định mọi nguồn sẽ sai và thiết kế để phát hiện được: đếm trước/sau, đối chiếu, nghi ngờ số đẹp, fail loudly.
+- term: "Data contract"
+  type: concept
+  def: >-
+    Hợp đồng có kiểm tra tự động giữa người sinh dữ liệu và người dùng: schema, ý nghĩa, SLA, owner. Đổi phá vỡ hợp đồng bị chặn ở CI.
+- term: "Lineage"
+  aliases: ["Column-level lineage"]
+  type: concept
+  def: >-
+    Đồ thị "bảng nào sinh ra bảng nào" tới tận dashboard; column-level là ở mức cột. Cần để đánh giá ảnh hưởng và dám xoá bảng cũ.
+- term: "Catalog"
+  aliases: ["Data catalog"]
+  type: concept
+  def: >-
+    Danh bạ dữ liệu: mô tả bảng/cột, owner, tag PII, freshness, ai đang dùng. Nơi người dùng tìm và hiểu dữ liệu.
+- term: "DataHub"
+  type: tool
+  def: >-
+    Catalog + lineage mã nguồn mở từ LinkedIn; thu metadata từ nhiều nguồn (dbt, Airflow, BigQuery, Kafka).
+- term: "OpenMetadata"
+  type: tool
+  def: >-
+    Catalog mã nguồn mở với lineage, quality, glossary trong một; dễ dựng hơn DataHub cho team vừa.
+- term: "Amundsen"
+  type: tool
+  def: >-
+    Catalog mã nguồn mở từ Lyft, tập trung tìm kiếm và độ phổ biến của bảng; ít được phát triển gần đây.
+- term: "Atlan"
+  type: tool
+  def: >-
+    Catalog SaaS hiện đại (lineage, glossary, workflow) hướng tới cả người nghiệp vụ.
+- term: "Collibra"
+  type: tool
+  def: >-
+    Nền tảng data governance doanh nghiệp (catalog, policy, steward workflow); phổ biến ở ngân hàng/tập đoàn.
+- term: "Dataplex"
+  type: tool
+  def: >-
+    Dịch vụ governance của Google Cloud: catalog, lineage, quality cho BigQuery/GCS.
+- term: "PII"
+  type: concept
+  def: >-
+    Personally Identifiable Information — dữ liệu định danh cá nhân (tên, SĐT, CMND, email). Phải tag, che, giới hạn truy cập, và xoá theo luật.
+- term: "Nghị định 13"
+  type: concept
+  def: >-
+    Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân của Việt Nam: mục đích, đồng ý, quyền xoá, chuyển ra nước ngoài — ràng buộc pipeline có PII.
+- term: "Right to erasure"
+  type: concept
+  def: >-
+    Quyền được xoá/được quên: cá nhân yêu cầu xoá dữ liệu của họ → phải xoá ở mọi lớp (raw, snapshot, lake, backup) và chứng minh được.
+- term: "Retention policy"
+  type: practice
+  def: >-
+    Quy định mỗi lớp/bảng giữ dữ liệu bao lâu, cấu hình tự động (partition expiration, lifecycle) và ghi thành văn bản.
+- term: "Crypto-shredding"
+  type: pattern
+  def: >-
+    Mã hoá PII bằng khoá riêng cho mỗi người; muốn "xoá" chỉ cần huỷ khoá — dùng cho backup/archive không xoá từng dòng được.
+- term: "Audit trail"
+  aliases: ["Audit log"]
+  type: concept
+  def: >-
+    Nhật ký ai làm gì lúc nào (đọc bảng nào, xoá gì, yêu cầu gì) — cần khi điều tra rò rỉ và chứng minh tuân thủ.
+- term: "RBAC"
+  type: concept
+  def: >-
+    Role-Based Access Control — cấp quyền theo vai trò/nhóm (analyst đọc marts) thay vì từng người, dễ quản lý và thu hồi.
+- term: "IAM"
+  type: concept
+  def: >-
+    Identity and Access Management — hệ thống quyền của cloud: ai (người/service account) được làm gì trên tài nguyên nào.
+- term: "Column masking"
+  aliases: ["Data masking"]
+  type: pattern
+  def: >-
+    Che cột nhạy cảm (SĐT thành ***1234) tuỳ vai trò người xem, ngay tại warehouse — người không có quyền vẫn query được bảng.
+- term: "Row-level security"
+  type: pattern
+  def: >-
+    Mỗi người chỉ thấy các dòng thuộc phạm vi của mình (chi nhánh, vùng) trên cùng một bảng, do warehouse ép.
+- term: "Encryption"
+  type: concept
+  def: >-
+    Mã hoá dữ liệu khi lưu (at rest) và khi truyền (in transit). Cloud bật mặc định; khoá tự quản (CMEK) khi tuân thủ yêu cầu.
+- term: "Least privilege"
+  type: practice
+  def: >-
+    Mỗi tài khoản chỉ có đúng quyền cần cho việc của nó (pipeline ingest chỉ ghi raw). Khi lộ, thiệt hại nhỏ.
+- term: "Service account"
+  type: concept
+  def: >-
+    Tài khoản cho máy/pipeline (không phải người) để xác thực với cloud/DB; nên riêng cho mỗi pipeline, không dùng để chạy query tay.
+- term: "Workload identity"
+  type: concept
+  def: >-
+    Pod/job nhận danh tính từ nền tảng (GKE, Cloud Run) thay vì file key — không có key JSON để mà lộ.
+- term: "Key rotation"
+  type: practice
+  def: >-
+    Đổi khoá/secret định kỳ và có ngày hết hạn để khoá bị lộ không dùng được mãi.
+- term: "Secret Manager / Vault"
+  type: tool
+  def: >-
+    Kho lưu secret tập trung (GCP Secret Manager, AWS Secrets Manager, HashiCorp Vault); pipeline đọc lúc chạy, không nằm trong code.
+- term: "Data owner"
+  aliases: ["Owner", "Ownership"]
+  type: concept
+  def: >-
+    Team/người chịu trách nhiệm về đúng/sai và SLA của một bảng/nguồn. Không có owner thì không ai sửa khi số sai.
+- term: "Data steward"
+  type: role
+  def: >-
+    Người phía nghiệp vụ chịu trách nhiệm định nghĩa, chất lượng và quyền dùng dữ liệu của một domain; cầu nối giữa nghiệp vụ và DE.
+- term: "MDM"
+  aliases: ["Golden record"]
+  type: concept
+  def: >-
+    Master Data Management — một "nguồn sự thật" (golden record) cho khách hàng/sản phẩm khi 5 hệ thống lưu 5 bản khác nhau.
+- term: "Data mesh"
+  aliases: ["Domain ownership", "Federated governance"]
+  type: concept
+  def: >-
+    Mỗi domain nghiệp vụ tự sở hữu và phục vụ dữ liệu như sản phẩm; team platform cung cấp hạ tầng chung; governance liên bang. Cho tổ chức lớn.
+- term: "Data product"
+  aliases: ["Data as a product"]
+  type: concept
+  def: >-
+    Bảng/API dữ liệu được đối xử như sản phẩm: có người dùng, docs, SLA, owner, versioning, kênh phản hồi.
+- term: "Data sharing"
+  aliases: ["Analytics Hub"]
+  type: concept
+  def: >-
+    Chia sẻ bảng cho tổ chức/project khác không copy dữ liệu (Snowflake Share, BigQuery Analytics Hub) — kèm quyền và SLA.
+- term: "Certified dataset"
+  type: concept
+  def: >-
+    Bảng đã kiểm tra, có owner và SLA, được đánh dấu "dùng cho báo cáo chính thức" — phân biệt với bảng thử nghiệm.
+- term: "Root cause analysis"
+  type: practice
+  def: >-
+    Truy tới nguyên nhân gốc (hỏi "vì sao" nhiều lần) thay vì sửa triệu chứng; kết quả là lỗi của hệ thống, không phải của người.
+- term: "Bisect"
+  type: practice
+  def: >-
+    Thu hẹp phạm vi lỗi bằng cách chia đôi: theo thời gian (ngày đúng vs ngày sai), theo lớp (raw → mart), theo commit (git bisect).
+- term: "Timeline"
+  type: concept
+  def: >-
+    Dòng thời gian sự cố trong postmortem: phát hiện, phản ứng, khắc phục — lúc nào, bởi ai/cái gì. Nền để tìm chỗ chậm.
+- term: "Postmortem"
+  aliases: ["Blameless postmortem"]
+  type: practice
+  def: >-
+    Tài liệu một trang sau sự cố: dòng thời gian, nguyên nhân gốc, tác động, hành động có người và hạn. Không đổ lỗi để lần sau người ta vẫn báo sớm.
+- term: "Incident communication"
+  type: practice
+  def: >-
+    Thông báo sự cố sớm, nói tác động trước nguyên nhân, hứa giờ cập nhật và giữ lời.
+- term: "Impact statement"
+  type: concept
+  def: >-
+    Câu nói rõ sự cố ảnh hưởng gì, tới ai, từ khi nào ("chỉ dashboard Finance, chỉ ngày 15/6") — thứ người nhận cần nhất.
+- term: "Status update"
+  type: practice
+  def: >-
+    Cập nhật định kỳ trong sự cố, đúng giờ đã hứa, kể cả khi chưa có gì mới.
+- term: "ETA"
+  type: concept
+  def: >-
+    Estimated Time of Arrival — dự kiến xong lúc nào. Nói kèm độ chắc chắn; hứa giờ cập nhật tiếp nếu chưa biết.
+- term: "CI/CD"
+  type: concept
+  def: >-
+    Continuous Integration/Delivery: mỗi thay đổi tự động được lint, test, build và deploy — không copy tay lên server.
+- term: "GitHub Actions"
+  type: tool
+  def: >-
+    Dịch vụ CI/CD của GitHub, cấu hình bằng YAML trong repo; chạy dbt test, pytest, build image khi có PR/push.
+- term: "GitLab CI"
+  type: tool
+  def: >-
+    CI/CD tích hợp của GitLab, cấu hình bằng .gitlab-ci.yml.
+- term: "Terraform"
+  type: tool
+  def: >-
+    Công cụ Infrastructure as Code: khai báo dataset, bucket, IAM, cluster bằng file; tái tạo được, review được, không "click tay".
+- term: "Pulumi"
+  type: tool
+  def: >-
+    IaC bằng ngôn ngữ lập trình (Python, TypeScript) thay vì HCL của Terraform.
+- term: "Kubernetes"
+  type: tool
+  def: >-
+    Nền tảng chạy container theo cụm: scale, tự khởi động lại, cấp tài nguyên. Nơi chạy Airflow worker, Spark, connector khi tự dựng.
+- term: "Helm"
+  type: tool
+  def: >-
+    Trình quản lý gói cho Kubernetes: cài Airflow/Kafka bằng chart có sẵn thay vì viết hàng trăm dòng YAML.
+- term: "Schema per developer"
+  type: pattern
+  def: >-
+    Mỗi developer ghi vào schema riêng (dbt_ducna) ở dev để thử nghiệm không đụng nhau và không đụng prod.
+- term: "Blue/green"
+  type: pattern
+  def: >-
+    Chạy phiên bản mới song song với cũ, đối chiếu, rồi chuyển người dùng sang; có đường quay lại tức thì.
+- term: "Monitoring"
+  type: concept
+  def: >-
+    Theo dõi liên tục ba lớp: hạ tầng (scheduler sống không), pipeline (fail, chạy lâu), dữ liệu (freshness, volume) — để biết hỏng trước người dùng.
+- term: "Prometheus"
+  type: tool
+  def: >-
+    Hệ thống thu metric theo thời gian (số task fail, lag, CPU) mã nguồn mở; nguồn cho Grafana và alert.
+- term: "Grafana"
+  type: tool
+  def: >-
+    Công cụ dashboard/alert cho metric hệ thống (từ Prometheus, BigQuery…); theo dõi sức khoẻ pipeline.
+- term: "PagerDuty"
+  type: tool
+  def: >-
+    Dịch vụ gọi người trực (điện thoại, SMS) khi có sự cố nghiêm trọng, có lịch on-call và escalation.
+- term: "Slack alert"
+  type: pattern
+  def: >-
+    Gửi thông báo fail/SLA miss vào kênh Slack kèm dag_id, task, ngày, link log — đủ để hành động, không chỉ "có lỗi".
+- term: "On-call"
+  type: practice
+  def: >-
+    Lịch trực: ai chịu trách nhiệm phản ứng khi pipeline hỏng ngoài giờ; đi kèm runbook và alert có ý nghĩa.
+- term: "Runbook"
+  type: concept
+  def: >-
+    Tài liệu "pipeline này hỏng thì làm gì": dấu hiệu, cách kiểm tra, cách sửa lỗi đã gặp, cách chạy lại, ai cần báo. Viết cho người trực lúc 3h sáng.
+- term: "FinOps"
+  type: concept
+  def: >-
+    Thực hành quản lý chi phí cloud như một chiều kỹ thuật: đo theo team/pipeline, tối ưu thứ chạy nhiều, cam kết khi ổn định.
+- term: "RPO / RTO"
+  type: concept
+  def: >-
+    RPO: chấp nhận mất tối đa bao nhiêu dữ liệu (quyết định tần suất backup). RTO: phải khôi phục trong bao lâu. Nghiệp vụ chọn, DE thiết kế để đạt.
+- term: "Snapshot"
+  type: concept
+  def: >-
+    Bản chụp trạng thái tại một thời điểm — của bảng (để backup/time travel), của dimension (SCD), hoặc của state streaming.
+- term: "Cross-region"
+  type: pattern
+  def: >-
+    Sao chép dữ liệu/hệ thống sang vùng cloud khác để sống sót khi cả vùng sập; đắt, chỉ khi RTO tính bằng giờ.
+- term: "Restore drill"
+  type: practice
+  def: >-
+    Diễn tập khôi phục từ backup theo runbook, đo thời gian. Backup chưa từng khôi phục thử coi như không có.
+- term: "Versioning"
+  type: concept
+  def: >-
+    Đánh phiên bản cho schema/bảng/API (fct_orders_v2) để đổi lớn không phá người dùng cũ; kèm thời hạn ngừng bản cũ.
+- term: "Deprecation"
+  type: practice
+  def: >-
+    Thông báo ngừng bảng/cột với ngày cụ thể, danh sách người bị ảnh hưởng và cách chuyển — thay vì xoá đột ngột.
+- term: "Documentation"
+  type: practice
+  def: >-
+    Mô tả bảng/cột (grain, ý nghĩa, ngoại lệ), runbook, design doc — để tri thức tồn tại ngoài đầu bạn.

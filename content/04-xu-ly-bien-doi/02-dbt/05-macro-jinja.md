@@ -7,6 +7,7 @@ tools:
   - run_query
   - dbt_utils
   - target.name
+weight: 4
 ---
 
 dbt biên dịch file `.sql` qua Jinja trước khi gửi tới warehouse: `{{ ref('x') }}` thành tên bảng thật, vòng lặp sinh cột, điều kiện theo môi trường. Macro là hàm Jinja dùng lại được.

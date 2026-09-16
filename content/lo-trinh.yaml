@@ -16,6 +16,9 @@ phases:
       - id: luu-tru-storage/oltp-vs-olap
         note: >-
           Lý do DE tồn tại. Hiểu vì sao không chạy analytics trên DB production.
+      - id: tu-duy-ky-nang-mem/hoi-dung-cau-truoc-khi-code
+        note: >-
+          Thói quen số một. Viết lại mọi yêu cầu thành một câu "ai cần biết gì để quyết định gì".
       - id: nen-tang/sql-nang-cao/window-function
         note: >-
           Hàm dùng nhiều nhất trong DE. Luyện tới khi viết ROW_NUMBER / LAG / running total không cần tra.
@@ -34,6 +37,9 @@ phases:
       - id: nen-tang/data-modeling/slowly-changing-dimension-scd
         note: >-
           Type 2 là thứ bạn sẽ phải làm thật; dbt snapshot làm hộ phần lớn.
+      - id: nen-tang/datetime-timezone-kieu-du-lieu
+        note: >-
+          Nguồn bug số một. UTC, TIMESTAMP vs DATETIME, DECIMAL cho tiền — học trước khi tạo bảng đầu tiên.
       - id: nen-tang/dinh-dang-file-luu-tru-cot
         note: >-
           Ngắn, nhưng giải thích vì sao Parquet + cột rẻ hơn CSV 10 lần.
@@ -71,6 +77,9 @@ phases:
       - id: dieu-phoi-orchestration/apache-airflow/logical-date-va-catchup
         note: >-
           Hiểu sai logical_date là backfill sai. Không dùng datetime.now() trong task.
+      - id: nen-tang/lap-trinh/python-cho-de
+        note: >-
+          Type hints, generator, logging, không nuốt lỗi — Python "bảo trì được" cho pipeline.
       - id: dieu-phoi-orchestration/apache-airflow/anti-pattern
         note: >-
           Đọc để tránh ngay từ DAG đầu tiên.
@@ -87,6 +96,9 @@ phases:
       - id: nen-tang/sql-nang-cao/cte-va-materialize
         note: >-
           WITH không phải cache. Biết engine mình dùng inline hay materialize.
+      - id: tu-duy-ky-nang-mem/tu-duy-phong-thu-voi-du-lieu
+        note: >-
+          "Nếu số này sai, tôi phát hiện bằng cách nào?" — hỏi trước khi gửi bất kỳ con số nào.
       - id: chat-luong-quan-tri/kiem-tra-chat-luong-du-lieu
         note: >-
           Schema / volume / freshness / distribution — bốn nhóm test đặt ở ranh giới các lớp.
@@ -99,6 +111,9 @@ phases:
       - id: van-hanh-nen-tang-dataops/monitoring-alerting-on-call
         note: >-
           Biết pipeline hỏng trước khi người dùng biết.
+      - id: chat-luong-quan-tri/dieu-tra-su-co-postmortem
+        note: >-
+          Đi ngược lineage, bisect theo thời gian, postmortem không đổ lỗi.
 
   - name: Quy mô lớn
     goal: "Tuần 9–10. Khi SQL trên warehouse không còn đủ: hệ phân tán, Spark, CDC, streaming."
@@ -124,6 +139,12 @@ phases:
       - id: thu-thap-ingestion/streaming-ingestion/consumer-group-rebalance
         note: >-
           Commit sau khi xử lý (at-least-once) + downstream idempotent là cặp thực dụng.
+      - id: kien-truc-mau-thiet-ke/quy-trinh-thiet-ke/thu-thap-yeu-cau-sla
+        note: >-
+          Bốn con số (freshness, accuracy, availability, retention) quyết định kiến trúc — hỏi trước khi vẽ hộp.
+      - id: kien-truc-mau-thiet-ke/quy-trinh-thiet-ke/uoc-luong-quy-mo
+        note: >-
+          Nhẩm GB/năm và $/tháng trong 2 phút để biết có cần Spark/streaming không.
       - id: kien-truc-mau-thiet-ke/batch-hay-streaming
         note: >-
           Câu hỏi thiết kế đắt nhất. Phần lớn báo cáo chịu được 1 giờ trễ.
@@ -143,6 +164,12 @@ phases:
       - id: vai-tro-su-nghiep/big-tech-vs-cong-ty-thuong
         note: >-
           Khác biệt cốt lõi trong công việc hằng ngày — chọn môi trường phù hợp mục tiêu.
+      - id: tu-duy-ky-nang-mem/hieu-nghiep-vu-va-metric
+        note: >-
+          Không hiểu doanh thu tính thế nào thì không mô hình được bảng doanh thu.
+      - id: tu-duy-ky-nang-mem/viet-design-doc-runbook
+        note: >-
+          Viết được là nghĩ được. Design doc một trang có "phương án không chọn".
       - id: vai-tro-su-nghiep/phong-van-de
         note: >-
           Tự kiểm tra: SQL live, modeling case, pipeline design.

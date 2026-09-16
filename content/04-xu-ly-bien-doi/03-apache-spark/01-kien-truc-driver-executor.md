@@ -7,6 +7,7 @@ tools:
   - Cluster manager (YARN / Kubernetes)
   - spark.executor.memory
   - Lazy evaluation
+weight: 4
 ---
 
 Một ứng dụng Spark gồm **một driver** và **nhiều executor**:

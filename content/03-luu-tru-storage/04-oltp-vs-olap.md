@@ -7,6 +7,7 @@ tools:
   - Row store
   - Column store
   - Read replica
+weight: 5
 ---
 
 OLTP: nhiều giao dịch nhỏ, index theo khoá, chuẩn hoá, ưu tiên latency ms. OLAP: ít query nhưng quét hàng tỷ dòng, lưu theo cột, phi chuẩn hoá, ưu tiên throughput.

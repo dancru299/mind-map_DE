@@ -7,6 +7,7 @@ tools:
   - Apache Pinot
   - StarRocks
   - Doris
+weight: 3
 ---
 
 Khi cần query analytics trên dữ liệu vừa đến (dashboard vận hành, giám sát gian lận, product analytics). Ingest từ Kafka, trả kết quả trong mili giây.

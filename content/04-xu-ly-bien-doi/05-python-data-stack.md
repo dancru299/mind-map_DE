@@ -7,6 +7,7 @@ tools:
   - DuckDB
   - PyArrow
   - Ibis
+weight: 4
 ---
 
 Dữ liệu dưới vài chục GB không cần Spark. pandas quen thuộc nhưng chậm và tốn RAM; polars nhanh hơn nhiều; DuckDB cho phép chạy SQL analytics trên file Parquet ngay trong Python.

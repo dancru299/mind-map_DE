@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   Đây là phần big tech đào rất sâu (design a metrics pipeline cho 1 tỷ user). Công ty thường: chủ
   yếu cần hiểu để không viết job Spark 3 tiếng vì skew.
+weight: 5
 ---
 
 Không cần thành chuyên gia, nhưng phải hiểu các khái niệm này để đọc lỗi Spark hay thiết kế pipeline không bị sai dữ liệu.

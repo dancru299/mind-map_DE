@@ -1,0 +1,389 @@
+- term: "ETL"
+  type: concept
+  def: >-
+    Extract–Transform–Load: biến đổi dữ liệu trên server trung gian trước khi tải vào warehouse. Cách truyền thống khi warehouse còn yếu.
+- term: "ELT"
+  type: concept
+  def: >-
+    Extract–Load–Transform: tải thô vào warehouse trước, biến đổi bằng SQL ngay trong đó. Chuẩn hiện đại; giữ được raw, analyst tự làm được.
+- term: "Informatica"
+  type: tool
+  def: >-
+    Bộ ETL doanh nghiệp lâu đời, kéo-thả, đắt; còn phổ biến ở ngân hàng/tập đoàn lớn.
+- term: "SSIS"
+  type: tool
+  def: >-
+    SQL Server Integration Services — công cụ ETL của Microsoft đi kèm SQL Server; kéo-thả, phổ biến ở hệ Windows.
+- term: "Modern Data Stack"
+  type: concept
+  def: >-
+    Tổ hợp managed + ELT: Fivetran/Airbyte → Snowflake/BigQuery → dbt → Airflow/Dagster → Looker → reverse ETL. Team nhỏ vận hành được.
+- term: "Medallion"
+  type: pattern
+  def: >-
+    Kiến trúc lớp Bronze (raw) → Silver (sạch) → Gold (marts). Mỗi lớp có hợp đồng rõ; tên khác nhau nhưng ý tưởng giống raw/staging/marts.
+- term: "Bronze"
+  aliases: ["Raw layer"]
+  type: concept
+  def: >-
+    Lớp thô: bản sao nguồn nguyên vẹn, không sửa gì. Để làm lại mọi thứ phía sau khi cần.
+- term: "Silver"
+  aliases: ["Staging"]
+  type: concept
+  def: >-
+    Lớp đã làm sạch: ép kiểu, đổi tên, khử trùng, đã test. Trong dbt gọi là staging (1:1 với nguồn) và intermediate.
+- term: "Gold"
+  aliases: ["Marts"]
+  type: concept
+  def: >-
+    Lớp bảng nghiệp vụ cuối (fct_*, dim_*) sẵn cho BI và ML. Trong dbt là thư mục marts.
+- term: "dbt"
+  aliases: ["dbt Core"]
+  type: tool
+  def: >-
+    Công cụ biến SQL thành phần mềm: model là file SELECT, tự tính thứ tự chạy qua ref(), có test, docs, lineage. Chuẩn de facto cho lớp transform.
+- term: "dbt Cloud"
+  type: tool
+  def: >-
+    Bản SaaS của dbt Labs: IDE web, lịch chạy, CI, semantic layer — trả tiền thay vì tự dựng quanh dbt Core.
+- term: "{{ ref() }} / {{ source() }}"
+  aliases: ["ref()"]
+  type: sql
+  def: >-
+    Hai hàm Jinja cốt lõi của dbt: ref('model') trỏ tới model khác (dbt suy ra thứ tự chạy), source('nguồn','bảng') trỏ tới bảng nguồn đã khai báo.
+- term: "dbt build"
+  type: tool
+  def: >-
+    Lệnh chạy model, test, snapshot, seed theo đúng thứ tự phụ thuộc; model sau không chạy nếu test trước fail.
+- term: "dbt test"
+  aliases: ["Test"]
+  type: tool
+  def: >-
+    Test dữ liệu trong dbt: một SELECT trả về dòng vi phạm, 0 dòng là pass. Khai báo trong YAML (generic) hoặc file SQL (singular).
+- term: "not_null / unique"
+  type: tool
+  def: >-
+    Hai test generic cơ bản nhất của dbt: cột không được NULL, giá trị không được trùng — đặt trên mọi khoá.
+- term: "accepted_values"
+  type: tool
+  def: >-
+    Test dbt: cột chỉ được nhận các giá trị trong danh sách (status ∈ paid, pending, refunded).
+- term: "relationships"
+  type: tool
+  def: >-
+    Test dbt kiểm tra toàn vẹn tham chiếu: mọi khoá trong fact phải tồn tại trong dimension.
+- term: "dbt_utils"
+  type: tool
+  def: >-
+    Gói macro/test chuẩn cho dbt: surrogate key, date spine, pivot, star, accepted_range, recency… Cài trước khi tự viết macro.
+- term: "dbt_expectations"
+  type: tool
+  def: >-
+    Gói test dbt lấy cảm hứng từ Great Expectations: kiểm phân phối, regex, khoảng giá trị, số dòng… cho test nghiệp vụ.
+- term: "severity: warn"
+  type: config
+  def: >-
+    Cấu hình test dbt chỉ cảnh báo thay vì fail — cho test "nên đúng" (null rate < 5%) khác test "phải đúng" (khoá duy nhất).
+- term: "dbt unit test"
+  type: tool
+  def: >-
+    Test dbt (≥ 1.8) cho input giả, kiểm output mong đợi của một model — test logic không cần dữ liệu thật.
+- term: "dbt docs"
+  type: tool
+  def: >-
+    Lệnh sinh trang web tài liệu từ YAML và code: mô tả model/cột, lineage graph. Cách rẻ nhất để có catalog.
+- term: "dbt source freshness"
+  type: tool
+  def: >-
+    Lệnh so MAX(loaded_at_field) của bảng nguồn với hiện tại để biết nguồn ngừng cập nhật từ khi nào.
+- term: "loaded_at_field"
+  type: config
+  def: >-
+    Cột trong sources.yml cho biết dòng được tải lúc nào (vd _fivetran_synced) — dùng để đo freshness, không dùng cột nghiệp vụ.
+- term: "sources.yml"
+  type: config
+  def: >-
+    File YAML khai báo bảng nguồn (database, schema, bảng, freshness) để model tham chiếu qua source() thay vì gõ tên bảng thẳng.
+- term: "Exposure"
+  aliases: ["exposures"]
+  type: config
+  def: >-
+    Khai báo dbt về "ai dùng model này" (dashboard, model ML, app) — lineage chạy tới người dùng cuối, biết ai bị ảnh hưởng khi đổi.
+- term: "dbt_project.yml"
+  type: config
+  def: >-
+    File cấu hình gốc của project dbt: tên, đường dẫn, materialization mặc định theo thư mục, biến.
+- term: "models/staging"
+  type: pattern
+  def: >-
+    Thư mục model 1:1 với bảng nguồn — chỉ đổi tên, ép kiểu, không join. Lớp đệm để nguồn đổi không lan ra sau.
+- term: "models/intermediate"
+  type: pattern
+  def: >-
+    Thư mục model trung gian: logic nghiệp vụ nhiều bước, join giữa các staging; không cho BI đọc trực tiếp.
+- term: "models/marts"
+  type: pattern
+  def: >-
+    Thư mục model cuối theo domain (finance, marketing): fct_* và dim_* — thứ BI và analyst dùng.
+- term: "view"
+  type: config
+  def: >-
+    Materialization dbt tạo VIEW — không lưu dữ liệu, chạy lại SELECT mỗi lần đọc. Mặc định; hợp staging.
+- term: "table"
+  type: config
+  def: >-
+    Materialization dbt tạo bảng bằng CREATE TABLE AS, xây lại toàn bộ mỗi lần chạy. Hợp marts vừa và nhỏ.
+- term: "ephemeral"
+  type: config
+  def: >-
+    Materialization dbt không tạo gì trong warehouse, model được inline thành CTE vào model dùng nó. Cho bước nhỏ; tính lại nếu dùng nhiều nơi.
+- term: "is_incremental()"
+  type: sql
+  def: >-
+    Macro dbt trả true khi bảng đã tồn tại và không full-refresh — dùng để thêm điều kiện WHERE chỉ lấy dữ liệu mới.
+- term: "unique_key"
+  type: config
+  def: >-
+    Cột/cột hợp xác định một dòng trong model incremental, để strategy merge/delete+insert biết dòng nào cần cập nhật.
+- term: "insert_overwrite"
+  aliases: ["INSERT OVERWRITE"]
+  type: config
+  def: >-
+    Strategy incremental thay thế toàn bộ partition có trong batch mới. Idempotent tự nhiên với bảng partition theo ngày.
+- term: "microbatch"
+  type: config
+  def: >-
+    Strategy incremental (dbt ≥ 1.9) tự chia theo event_time thành batch ngày/giờ, chạy lại được từng batch, có lookback.
+- term: "--full-refresh"
+  type: config
+  def: >-
+    Cờ dbt xây lại model incremental từ đầu. Bắt buộc sau khi đổi logic SELECT nếu muốn dữ liệu cũ theo logic mới.
+- term: "Macro"
+  aliases: ["{% macro %}"]
+  type: concept
+  def: >-
+    Hàm Jinja trong dbt dùng lại được ở nhiều model: sinh SQL theo tham số, vòng lặp tạo cột, logic theo môi trường.
+- term: "Jinja"
+  type: tool
+  def: >-
+    Ngôn ngữ template (Python) mà dbt và Airflow dùng để sinh SQL/cấu hình: biến, vòng lặp, điều kiện trong file .sql.
+- term: "run_query"
+  type: sql
+  def: >-
+    Macro dbt chạy một query lúc compile để lấy kết quả sinh SQL động — mạnh nhưng gọi warehouse mỗi lần parse, dùng có guard.
+- term: "target.name"
+  type: config
+  def: >-
+    Tên môi trường dbt đang chạy (dev, ci, prod) — để model tự thêm LIMIT ở dev hoặc ghi vào schema khác.
+- term: "dbt target"
+  type: config
+  def: >-
+    Cấu hình kết nối + schema đích của dbt theo môi trường trong profiles.yml; mỗi developer một schema riêng ở dev.
+- term: "dbt Slim CI"
+  aliases: ["state:modified+"]
+  type: pattern
+  def: >-
+    CI chỉ chạy model đã đổi trong PR và những gì phụ thuộc (state:modified+), model khác đọc từ prod (--defer). Từ 40 phút xuống vài phút.
+- term: "--defer"
+  type: config
+  def: >-
+    Cờ dbt: model không được chọn chạy sẽ được đọc từ môi trường khác (prod) theo manifest — nền của Slim CI.
+- term: "manifest.json"
+  type: concept
+  def: >-
+    File dbt sinh ra mô tả toàn bộ project (model, phụ thuộc, cấu hình). So manifest prod với PR để biết cái gì đã đổi.
+- term: "sqlfluff"
+  type: tool
+  def: >-
+    Linter/formatter cho SQL (hiểu Jinja của dbt): ép style thống nhất trong CI, hết tranh cãi thụt lề trong review.
+- term: "Orchestration"
+  type: concept
+  def: >-
+    Điều phối: quyết định task nào chạy, lúc nào, sau cái gì, làm gì khi hỏng. Airflow/Dagster là orchestrator.
+- term: "DAG"
+  type: concept
+  def: >-
+    Directed Acyclic Graph — đồ thị task và phụ thuộc không có vòng lặp. Đơn vị pipeline trong Airflow (file Python) và cách dbt mô tả model.
+- term: "Airflow"
+  type: tool
+  def: >-
+    Apache Airflow — orchestrator phổ biến nhất: DAG viết bằng Python, scheduler tạo run theo lịch, UI theo dõi, hàng trăm operator.
+- term: "Operator"
+  type: concept
+  def: >-
+    Một task Airflow làm một việc cụ thể (chạy Bash, Python, gửi SQL cho BigQuery). Provider package cung cấp operator cho từng dịch vụ.
+- term: "BashOperator"
+  type: tool
+  def: >-
+    Operator Airflow chạy một lệnh shell.
+- term: "PythonOperator / @task"
+  aliases: ["@task"]
+  type: tool
+  def: >-
+    Operator chạy một hàm Python; @task (TaskFlow API) là cách viết gọn hơn, tự truyền kết quả giữa task qua XCom.
+- term: "BigQueryInsertJobOperator"
+  type: tool
+  def: >-
+    Operator Airflow gửi một job SQL cho BigQuery chạy — Airflow chỉ điều phối, việc nặng warehouse làm.
+- term: "Sensor"
+  type: concept
+  def: >-
+    Task Airflow chờ điều kiện (file tới, partition xuất hiện, DAG khác xong) trước khi cho pipeline đi tiếp.
+- term: "mode=\"reschedule\""
+  type: config
+  def: >-
+    Chế độ sensor nhả worker slot giữa các lần kiểm tra thay vì giữ suốt (poke) — rẻ hơn nhiều khi có nhiều sensor.
+- term: "Deferrable / Triggerer"
+  type: concept
+  def: >-
+    Sensor/operator deferrable chuyển việc chờ sang tiến trình Triggerer (async) — hàng nghìn task chờ gần như miễn phí.
+- term: "XCom"
+  aliases: ["xcom_push / xcom_pull"]
+  type: concept
+  def: >-
+    Cơ chế task Airflow để lại giá trị nhỏ (tên file, số dòng) cho task khác đọc, lưu trong metadata DB. Không dùng cho dữ liệu lớn.
+- term: "Custom XCom backend"
+  type: config
+  def: >-
+    Cấu hình Airflow lưu XCom lớn ra object storage thay vì metadata DB — khi buộc phải truyền object to giữa task.
+- term: "Dynamic task mapping"
+  type: concept
+  def: >-
+    expand() trong Airflow: số task được tạo lúc chạy theo dữ liệu (một task cho mỗi file), thay vòng for lúc parse.
+- term: "Scheduler"
+  type: concept
+  def: >-
+    Tiến trình Airflow quét file DAG, tạo DAG run theo lịch, xếp task vào hàng đợi. Scheduler chậm là mọi thứ chậm.
+- term: "logical_date"
+  aliases: ["data_interval_start / end", "{{ ds }}"]
+  type: concept
+  def: >-
+    "Lần chạy này xử lý khoảng dữ liệu nào" — khác thời điểm chạy. {{ ds }} là logical_date dạng YYYY-MM-DD. Dùng cái này, không dùng datetime.now().
+- term: "catchup"
+  type: config
+  def: >-
+    Airflow có tự tạo run cho mọi kỳ từ start_date tới nay khi bật DAG không. Đặt False mặc định; backfill bằng tay khi cần.
+- term: "start_date"
+  type: config
+  def: >-
+    Ngày bắt đầu lịch của DAG; phải cố định (không dùng datetime.now()) và không đổi sau khi DAG đã chạy.
+- term: "Backfill"
+  type: concept
+  def: >-
+    Chạy lại pipeline cho khoảng thời gian trong quá khứ (sau khi sửa bug, thêm cột). Chỉ làm được khi pipeline nhận ngày làm tham số và idempotent.
+- term: "Partition-aligned"
+  type: pattern
+  def: >-
+    Mỗi lần chạy pipeline ứng đúng một partition của bảng đích (một ngày) và ghi đè partition đó — cách tự nhiên để idempotent và backfill.
+- term: "pool"
+  type: config
+  def: >-
+    Hạn mức slot dùng chung giữa nhiều DAG trong Airflow (tối đa 4 task cùng đụng DB ERP) — chống backfill làm sập nguồn.
+- term: "max_active_runs"
+  type: config
+  def: >-
+    Số DAG run của một DAG được chạy song song. Đặt 1 cho pipeline không idempotent.
+- term: "max_active_tasks"
+  type: config
+  def: >-
+    Số task chạy song song trong một DAG run.
+- term: "priority_weight"
+  type: config
+  def: >-
+    Độ ưu tiên của task khi tranh slot — pipeline doanh thu đi trước pipeline thử nghiệm.
+- term: "Executor (Celery / Kubernetes)"
+  type: concept
+  def: >-
+    Thành phần quyết định task Airflow chạy ở đâu: Local (một máy), Celery (đội worker cố định), Kubernetes (mỗi task một pod).
+- term: "DAG factory"
+  aliases: ["dag-factory"]
+  type: pattern
+  def: >-
+    Sinh nhiều DAG cùng mẫu từ cấu hình (YAML/list) bằng một hàm, thay vì copy 40 file. dag-factory là thư viện làm việc này.
+- term: "YAML config"
+  type: pattern
+  def: >-
+    Đặt phần "thay đổi" (danh sách bảng, lịch, cột) vào YAML để code sinh pipeline đọc — người không code cũng thêm nguồn được.
+- term: "globals()"
+  type: concept
+  def: >-
+    Cách đăng ký DAG sinh động trong Airflow: gán DAG vào globals() của module vì Airflow chỉ nhận DAG ở top-level.
+- term: "Top-level code"
+  type: concept
+  def: >-
+    Code chạy lúc Airflow parse file DAG (ngoài hàm task). Phải nhẹ — query DB hay gọi API ở đây làm scheduler chậm và DAG import lỗi.
+- term: "retries"
+  aliases: ["Retry & backoff"]
+  type: config
+  def: >-
+    Số lần Airflow tự chạy lại task khi lỗi, kèm retry_delay và exponential backoff — chống lỗi mạng tạm thời làm DAG đỏ.
+- term: "Variable / Connection"
+  type: concept
+  def: >-
+    Airflow Variable: cấu hình key-value; Connection: thông tin kết nối (host, user, secret). Nên đọc từ secret backend, không hard-code.
+- term: "Composer"
+  type: tool
+  def: >-
+    Cloud Composer — Airflow managed của Google Cloud.
+- term: "MWAA"
+  type: tool
+  def: >-
+    Amazon Managed Workflows for Apache Airflow — Airflow managed của AWS.
+- term: "Dagster"
+  aliases: ["Dagster Cloud"]
+  type: tool
+  def: >-
+    Orchestrator thế hệ sau Airflow: khai báo asset (bảng cần có) thay vì task, có lineage/type/test sẵn, tích hợp dbt rất tốt.
+- term: "Software-defined asset"
+  type: concept
+  def: >-
+    Khái niệm của Dagster: mô tả "bảng X được tính từ Y" bằng code; Dagster tự biết cái gì cần cập nhật khi Y đổi.
+- term: "Prefect"
+  type: tool
+  def: >-
+    Orchestrator Python-first, ít boilerplate, dễ chạy local; hợp team nhỏ.
+- term: "Mage"
+  type: tool
+  def: >-
+    Orchestrator kiểu notebook, thân thiện với người mới, tích hợp sẵn nhiều nguồn.
+- term: "Kestra"
+  type: tool
+  def: >-
+    Orchestrator khai báo bằng YAML, có UI, dùng cho cả data lẫn workflow chung.
+- term: "Argo"
+  type: tool
+  def: >-
+    Argo Workflows — engine chạy workflow trên Kubernetes (mỗi bước một container), dùng khi hạ tầng đã là K8s.
+- term: "cron"
+  type: tool
+  def: >-
+    Lịch chạy lệnh theo thời gian của Unix. Hợp một job lẻ; không có retry, lịch sử, phụ thuộc — lý do cần orchestrator.
+- term: "Schedule"
+  type: concept
+  def: >-
+    Lịch chạy của DAG: biểu thức cron, @daily, hoặc theo dataset/asset (chạy khi dữ liệu upstream sẵn sàng).
+- term: "Dataset trigger"
+  type: concept
+  def: >-
+    Airflow chạy DAG khi một dataset được task khác cập nhật thay vì theo giờ — phụ thuộc theo dữ liệu, ít lỗi lệch lịch.
+- term: "SLA"
+  aliases: ["SLA / alerting", "SLA / SLO"]
+  type: concept
+  def: >-
+    Service Level Agreement — cam kết đo được ("bảng doanh thu sẵn sàng trước 7h"). Có SLA mới có cảnh báo có ý nghĩa. SLO là mục tiêu nội bộ để đạt SLA.
+- term: "SLO"
+  type: concept
+  def: >-
+    Service Level Objective — mục tiêu nội bộ (freshness ≤ 1h 99% số ngày) chặt hơn SLA cam kết với người dùng.
+- term: "Freshness"
+  type: metric
+  def: >-
+    Dữ liệu mới nhất cách hiện tại bao lâu. Một trong bốn kiểm tra chất lượng cơ bản và là con số SLA hay dùng nhất.
+- term: "Alerting"
+  type: concept
+  def: >-
+    Gửi cảnh báo (Slack, PagerDuty) khi pipeline fail, chạy quá lâu, dữ liệu không tươi — kèm đủ ngữ cảnh để hành động.
+- term: "Pipeline"
+  type: concept
+  def: >-
+    Chuỗi bước đưa dữ liệu từ nguồn tới đích (ingest → transform → load → test). Đơn vị công việc cơ bản của DE.

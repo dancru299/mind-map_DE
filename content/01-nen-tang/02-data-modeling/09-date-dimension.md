@@ -6,6 +6,7 @@ tools:
   - Fiscal calendar
   - Holiday flag
   - dbt_date / dbt_utils.date_spine
+weight: 4
 ---
 
 Một bảng với **một dòng mỗi ngày** trong vài chục năm, kèm mọi thuộc tính người ta hay hỏi: thứ, tuần, tháng, quý, năm, năm tài chính, ngày lễ, ngày làm việc, ngày đầu/cuối tháng. Join fact với `dim_date` thay vì gọi hàm ngày trong mỗi query.

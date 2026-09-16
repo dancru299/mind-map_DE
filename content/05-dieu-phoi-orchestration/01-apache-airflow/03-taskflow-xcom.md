@@ -7,6 +7,7 @@ tools:
   - xcom_push / xcom_pull
   - Custom XCom backend
   - Dynamic task mapping
+weight: 4
 ---
 
 **XCom** (cross-communication) là cơ chế task để lại một giá trị nhỏ trong metadata DB cho task khác đọc: tên file vừa tạo, số dòng, ngày cần xử lý. Nó lưu trong Postgres của Airflow — **không phải kênh truyền dữ liệu**.

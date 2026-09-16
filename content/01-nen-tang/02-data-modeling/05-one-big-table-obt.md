@@ -5,6 +5,7 @@ tools:
   - Wide table
   - Denormalized
   - Nested/repeated fields
+weight: 3
 ---
 
 Với warehouse cột (BigQuery, Snowflake), join tốn kém còn quét cột thì rẻ, nên xu hướng là làm sẵn bảng rộng phi chuẩn hoá cho từng use case.

@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   Ở công ty thường, vấn đề lớn nhất là đội ngũ upstream không coi dữ liệu là sản phẩm — contract
   thường là thoả thuận miệng. Big tech áp contract bằng công cụ và quy trình.
+weight: 4
 ---
 
 Team app đổi tên cột → pipeline gãy lúc 3h sáng. Data contract là hợp đồng có kiểm tra tự động: schema, ý nghĩa, SLA, owner của một nguồn dữ liệu.

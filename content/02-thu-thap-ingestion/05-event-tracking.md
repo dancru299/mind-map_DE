@@ -8,6 +8,7 @@ tools:
   - Amplitude
   - Tracking plan
   - Event schema
+weight: 3
 ---
 
 Click, page view, add to cart… được thu qua SDK rồi đẩy về warehouse. Chất lượng phụ thuộc vào tracking plan: đặt tên event, thuộc tính bắt buộc, ai owner.

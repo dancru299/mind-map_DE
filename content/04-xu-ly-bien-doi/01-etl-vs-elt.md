@@ -7,6 +7,7 @@ tools:
   - Informatica
   - SSIS
   - Modern Data Stack
+weight: 5
 ---
 
 - ETL (truyền thống): biến đổi trên server trung gian (Informatica, SSIS, Spark) rồi mới tải vào warehouse. Warehouse cũ yếu nên phải làm vậy.

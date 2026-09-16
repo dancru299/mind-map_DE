@@ -7,6 +7,7 @@ tools:
   - Replay
   - Speed layer
   - Batch layer
+weight: 3
 ---
 
 - Lambda: một đường batch (chính xác, chậm) và một đường streaming (nhanh, xấp xỉ), ghép kết quả. Đúng nhưng phải viết logic hai lần.

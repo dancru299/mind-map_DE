@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   Công ty thường hay gặp: DBA không cho bật binlog/replication vì lo ảnh hưởng production. Big tech:
   CDC là hạ tầng có sẵn.
+weight: 5
 ---
 
 Thay vì query bảng nguồn, CDC đọc transaction log (binlog MySQL, WAL Postgres). Bắt được cả DELETE, gần thời gian thực, không tăng tải cho DB nguồn.

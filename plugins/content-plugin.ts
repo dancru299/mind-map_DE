@@ -1,7 +1,8 @@
 // Vite plugin: `import tree from 'virtual:content'` → cây JSON dựng lúc build; dev server tự reload khi content/ đổi
 import type { Plugin } from 'vite'
 import { resolve } from 'node:path'
-import { buildTree, listMarkdownFiles, readRoute } from './build-tree'
+import { existsSync, readdirSync } from 'node:fs'
+import { buildTree, listMarkdownFiles, readGlossary, readRoute } from './build-tree'
 
 const ID = 'virtual:content', RESOLVED = '\0' + ID
 
@@ -14,8 +15,10 @@ export function contentPlugin(contentDir = 'content'): Plugin {
       if (id !== RESOLVED) return null
       for (const f of listMarkdownFiles(dir)) this.addWatchFile(f)
       this.addWatchFile(resolve(dir, 'lo-trinh.yaml'))
+      const gdir = resolve(dir, 'glossary')
+      if (existsSync(gdir)) for (const f of readdirSync(gdir)) if (/\.ya?ml$/.test(f)) this.addWatchFile(resolve(gdir, f))
       const tree = buildTree(dir)
-      return `export const tree = ${JSON.stringify(tree)};\nexport const route = ${JSON.stringify(readRoute(dir, tree))};`
+      return `export const tree = ${JSON.stringify(tree)};\nexport const route = ${JSON.stringify(readRoute(dir, tree))};\nexport const glossary = ${JSON.stringify(readGlossary(dir))};`
     },
     configureServer(server) {
       server.watcher.add(dir)

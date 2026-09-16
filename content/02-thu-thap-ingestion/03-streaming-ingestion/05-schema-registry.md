@@ -6,6 +6,7 @@ tools:
   - Avro / Protobuf / JSON Schema
   - BACKWARD / FORWARD / FULL
   - Subject
+weight: 4
 ---
 
 Kafka chỉ thấy byte. Producer gửi JSON tuỳ tiện, đổi tên trường `amount` → `total_amount`, consumer đọc `NULL` mà không lỗi gì. Schema Registry đặt một **hợp đồng có kiểm tra tự động** giữa hai bên:

@@ -1,0 +1,298 @@
+- term: "Data Warehouse"
+  aliases: ["Warehouse"]
+  type: concept
+  def: >-
+    Kho dữ liệu có cấu trúc, tối ưu cho phân tích (đọc nhiều dòng, ít cột), truy vấn bằng SQL. Nơi analyst và dashboard đọc.
+- term: "Data Lake"
+  type: concept
+  def: >-
+    Object storage (S3/GCS) chứa file thô ở mọi định dạng, rẻ và không giới hạn nhưng không có ACID/index. Dễ thành "đầm lầy" nếu thiếu catalog.
+- term: "Lakehouse"
+  type: concept
+  def: >-
+    Data lake cộng table format (Iceberg/Delta/Hudi) để có ACID, schema evolution, time travel — kết hợp cái rẻ của lake với cái tiện của warehouse.
+- term: "OLTP"
+  type: concept
+  def: >-
+    Online Transaction Processing — DB của ứng dụng: nhiều giao dịch nhỏ, đọc/ghi từng dòng theo khoá, chuẩn hoá 3NF. Không dành cho analytics.
+- term: "OLAP"
+  type: concept
+  def: >-
+    Online Analytical Processing — hệ thống cho phân tích: quét hàng tỷ dòng ít cột, lưu theo cột, phi chuẩn hoá. Warehouse là OLAP.
+- term: "Row store"
+  type: concept
+  def: >-
+    Lưu dữ liệu theo dòng (cả bản ghi nằm cạnh nhau) — nhanh khi đọc/ghi một bản ghi, chậm khi quét một cột trên nhiều dòng.
+- term: "Column store"
+  type: concept
+  def: >-
+    Lưu dữ liệu theo cột — chỉ đọc cột cần, nén tốt vì giá trị cùng kiểu nằm cạnh nhau. Nền của mọi warehouse hiện đại.
+- term: "Read replica"
+  type: concept
+  def: >-
+    Bản sao chỉ-đọc của DB production, dùng để chạy query nặng/ETL mà không làm chậm app. Có độ trễ replication nhỏ.
+- term: "MPP"
+  type: concept
+  def: >-
+    Massively Parallel Processing — chia query cho nhiều máy chạy song song rồi gộp kết quả. Cách warehouse quét hàng TB trong vài giây.
+- term: "BigQuery"
+  type: tool
+  def: >-
+    Warehouse serverless của Google Cloud: không quản lý server, tính tiền theo byte quét (hoặc slot). Partition + cluster là đòn bẩy chi phí.
+- term: "Snowflake"
+  type: tool
+  def: >-
+    Warehouse cloud tách compute (virtual warehouse bật/tắt) khỏi storage, tính tiền theo giây chạy. Mạnh về time travel, clone, chia sẻ dữ liệu.
+- term: "Redshift"
+  type: tool
+  def: >-
+    Warehouse của AWS dạng cluster (gần Postgres). Cần chọn distribution/sort key; có bản serverless.
+- term: "Synapse"
+  type: tool
+  def: >-
+    Azure Synapse Analytics — warehouse + Spark + pipeline của Microsoft; đang được gộp vào Microsoft Fabric.
+- term: "Fabric"
+  type: tool
+  def: >-
+    Microsoft Fabric — nền tảng data hợp nhất (lakehouse OneLake, warehouse, Data Factory, Power BI) của Microsoft.
+- term: "Databricks"
+  type: tool
+  def: >-
+    Nền tảng lakehouse trên Spark do người tạo Spark xây: notebook, job, Delta Lake, Unity Catalog, ML. Managed, chạy trên AWS/Azure/GCP.
+- term: "Partition"
+  aliases: ["Partition / Cluster"]
+  type: concept
+  def: >-
+    Chia bảng thành các khối rời theo giá trị cột (thường theo ngày) để query chỉ đọc khối liên quan. Cùng cluster là hai đòn bẩy chi phí chính.
+- term: "Clustering"
+  aliases: ["Clustering / sort key", "Clustering key"]
+  type: concept
+  def: >-
+    Sắp xếp dữ liệu bên trong partition theo 1–4 cột để engine bỏ qua khối không khớp WHERE/JOIN. Hợp cột có nhiều giá trị (user_id).
+- term: "Cardinality"
+  type: concept
+  def: >-
+    Số giá trị phân biệt của một cột. Thấp (5 vùng) hợp partition; cao (triệu user) hợp cluster; quyết định cách nén và join.
+- term: "Hive partitioning"
+  type: pattern
+  def: >-
+    Quy ước thư mục kiểu key=value (dt=2025-06-01/) trên data lake để engine hiểu partition từ đường dẫn.
+- term: "Z-order (Delta)"
+  type: pattern
+  def: >-
+    Kỹ thuật Delta Lake sắp xếp dữ liệu theo nhiều cột cùng lúc (đường cong Z) để lọc hiệu quả trên bất kỳ cột nào trong số đó.
+- term: "Slot"
+  type: concept
+  def: >-
+    Đơn vị năng lực tính toán của BigQuery. On-demand tự cấp slot theo query; Editions mua slot cố định để không tính theo byte.
+- term: "On-demand vs Editions (slot)"
+  type: concept
+  def: >-
+    Hai mô hình giá BigQuery: on-demand tính theo TB quét (hợp workload nhỏ/thất thường), Editions mua slot theo giờ/cam kết (hợp khối lượng lớn, ổn định).
+- term: "Slot reservation"
+  type: config
+  def: >-
+    Đặt trước một lượng slot BigQuery cố định cho project/team — chi phí dự đoán được, nhưng lãng phí nếu workload chưa ổn định.
+- term: "maximum_bytes_billed"
+  type: config
+  def: >-
+    Giới hạn byte tối đa một query BigQuery được phép quét; vượt là query bị từ chối. Bảo hiểm rẻ chống query nhầm quét cả bảng.
+- term: "Dry run"
+  type: practice
+  def: >-
+    Chạy thử query BigQuery không tốn tiền để biết sẽ quét bao nhiêu byte — làm trước khi chạy thật trên bảng lớn.
+- term: "BigQuery execution details"
+  type: tool
+  def: >-
+    Tab trong BigQuery hiện các stage, slot time, byte shuffle của một query đã chạy — nơi tìm stage chậm và shuffle lớn.
+- term: "INFORMATION_SCHEMA.JOBS"
+  type: sql
+  def: >-
+    View hệ thống của BigQuery liệt kê mọi job đã chạy: ai, query gì, quét bao nhiêu byte. Nguồn để tìm query đắt nhất.
+- term: "Billing export"
+  type: tool
+  def: >-
+    Xuất chi tiết hoá đơn cloud vào một bảng để phân tích chi phí theo dịch vụ, project, label — nền của dashboard chi phí.
+- term: "Query cache"
+  type: concept
+  def: >-
+    Warehouse trả lại kết quả cũ nếu query giống hệt và dữ liệu chưa đổi (BigQuery 24h, Snowflake result cache) — miễn phí, nhưng làm sai lệch khi đo hiệu năng.
+- term: "Materialized view"
+  aliases: ["materialized_view"]
+  type: concept
+  def: >-
+    View có lưu kết quả và tự làm mới khi dữ liệu nguồn đổi. Nhanh như bảng, tươi như view, nhưng giới hạn về logic hỗ trợ.
+- term: "BI Engine"
+  type: tool
+  def: >-
+    Lớp cache trong RAM của BigQuery cho dashboard — query lặp lại trên cùng dữ liệu trả về trong mili giây, không tốn byte quét.
+- term: "Virtual warehouse"
+  type: concept
+  def: >-
+    Cluster tính toán của Snowflake, bật/tắt và đổi cỡ độc lập với dữ liệu. Nhiều warehouse ảo (ETL, BI, DS) đọc cùng dữ liệu mà không tranh nhau.
+- term: "Micro-partition"
+  type: concept
+  def: >-
+    Khối 50–500 MB mà Snowflake tự chia bảng thành, kèm min/max mỗi cột để bỏ qua khối không liên quan (pruning tự động).
+- term: "Time travel"
+  aliases: ["Time Travel / Zero-copy clone"]
+  type: concept
+  def: >-
+    Đọc bảng như tại một thời điểm trong quá khứ hoặc khôi phục bảng vừa xoá (Snowflake, BigQuery, Iceberg). Zero-copy clone: nhân bản bảng tức thì không tốn storage.
+- term: "Dynamic table"
+  type: tool
+  def: >-
+    Bảng Snowflake tự làm mới theo độ trễ mục tiêu (TARGET_LAG) từ một câu SELECT — thay cho pipeline incremental đơn giản.
+- term: "Snowpipe"
+  type: tool
+  def: >-
+    Dịch vụ Snowflake nạp file từ object storage ngay khi file xuất hiện, serverless, gần thời gian thực.
+- term: "Snowflake Query Profile"
+  type: tool
+  def: >-
+    Giao diện đồ thị của Snowflake cho một query: từng bước, byte quét, spill, partition đã prune — nơi đọc plan.
+- term: "Iceberg"
+  type: tool
+  def: >-
+    Apache Iceberg — table format mở cho data lake: ACID, schema/partition evolution, time travel, được hầu hết engine hỗ trợ. Đang thành chuẩn.
+- term: "Delta Lake"
+  type: tool
+  def: >-
+    Table format của Databricks trên Parquet: transaction log, ACID, time travel, OPTIMIZE/Z-order. Mạnh nhất trong hệ Databricks.
+- term: "Hudi"
+  type: tool
+  def: >-
+    Apache Hudi — table format mạnh về upsert và ingest streaming vào lake; phổ biến ở châu Á và hệ AWS.
+- term: "Schema evolution"
+  type: concept
+  def: >-
+    Thêm/đổi tên/xoá cột mà không phải ghi lại toàn bộ dữ liệu; table format và Schema Registry hỗ trợ có kiểm soát.
+- term: "Compaction"
+  aliases: ["OPTIMIZE / compaction"]
+  type: pattern
+  def: >-
+    Gộp nhiều file nhỏ thành ít file lớn (và dọn file cũ) trên lake để đọc nhanh hơn. Delta: OPTIMIZE; Iceberg: rewrite_data_files.
+- term: "Trino"
+  type: tool
+  def: >-
+    Engine SQL phân tán (từ Presto) truy vấn trực tiếp trên lake, Iceberg, Kafka, Postgres… cùng lúc mà không di chuyển dữ liệu.
+- term: "S3"
+  type: tool
+  def: >-
+    Amazon Simple Storage Service — object storage của AWS; nền của data lake trên AWS.
+- term: "GCS"
+  type: tool
+  def: >-
+    Google Cloud Storage — object storage của GCP; nơi chứa raw file, Parquet, và staging cho BigQuery.
+- term: "ADLS"
+  type: tool
+  def: >-
+    Azure Data Lake Storage — object storage có hệ thống thư mục phân cấp của Azure.
+- term: "Object storage"
+  type: concept
+  def: >-
+    Lưu file như "object" theo khoá trong bucket (S3/GCS/ADLS): rẻ, bền, không giới hạn, nhưng không sửa tại chỗ được — chỉ ghi đè cả file.
+- term: "Hive Metastore"
+  type: tool
+  def: >-
+    Kho metadata (bảng nào, cột gì, file ở đâu) cho dữ liệu trên lake, từ thời Hadoop; Spark/Trino vẫn dùng hoặc thay bằng Glue/Iceberg catalog.
+- term: "Glue Catalog"
+  type: tool
+  def: >-
+    Catalog metadata managed của AWS (tương thích Hive Metastore) cho Athena, EMR, Redshift Spectrum.
+- term: "Glue"
+  type: tool
+  def: >-
+    AWS Glue — dịch vụ ETL serverless (Spark managed) kèm catalog và crawler tự nhận schema file trên S3.
+- term: "Parquet"
+  type: concept
+  def: >-
+    Định dạng file cột, nén tốt, có metadata min/max mỗi khối. Chuẩn mặc định trên data lake; rẻ hơn CSV nhiều lần khi query.
+- term: "ORC"
+  type: concept
+  def: >-
+    Định dạng file cột tương tự Parquet, phổ biến trong hệ Hive/Hadoop.
+- term: "Avro"
+  type: concept
+  def: >-
+    Định dạng dòng có schema đi kèm, hỗ trợ evolution tốt; phổ biến trên Kafka và cho dữ liệu ghi liên tục.
+- term: "JSON Lines"
+  type: concept
+  def: >-
+    File mỗi dòng một JSON (ndjson). Dễ append và stream, đọc được từng dòng; nhưng to và chậm hơn Parquet cho analytics.
+- term: "Compression (snappy, zstd)"
+  type: concept
+  def: >-
+    Thuật toán nén trong Parquet/ORC: snappy nhanh, nén vừa; zstd nén tốt hơn với chi phí CPU hợp lý — đang thành mặc định mới.
+- term: "Real-time OLAP"
+  type: concept
+  def: >-
+    Hệ thống phân tích trên dữ liệu vừa đến (giây), trả lời trong mili giây: ClickHouse, Druid, Pinot. Cho dashboard vận hành, giám sát.
+- term: "ClickHouse"
+  type: tool
+  def: >-
+    DB cột mã nguồn mở cực nhanh cho analytics thời gian thực; ingest từ Kafka, query mili giây; join lớn là điểm yếu.
+- term: "Apache Druid"
+  type: tool
+  def: >-
+    DB OLAP thời gian thực cho dữ liệu sự kiện: ingest streaming, pre-aggregation, phù hợp dashboard đếm/gom theo thời gian.
+- term: "Apache Pinot"
+  type: tool
+  def: >-
+    DB OLAP thời gian thực từ LinkedIn, tối ưu cho query người dùng cuối độ trễ thấp ở quy mô lớn (product analytics).
+- term: "StarRocks"
+  type: tool
+  def: >-
+    DB OLAP MPP mã nguồn mở, mạnh về join và query trực tiếp trên lake (Iceberg/Hive), coi như thay thế ClickHouse khi cần join.
+- term: "Doris"
+  type: tool
+  def: >-
+    Apache Doris — DB OLAP MPP (cùng gốc với StarRocks), phổ biến ở Trung Quốc và Đông Nam Á cho báo cáo thời gian thực.
+- term: "MongoDB"
+  type: tool
+  def: >-
+    DB document (JSON) phổ biến cho app. Với DE thường là nguồn cần làm phẳng, lấy qua CDC (Debezium hỗ trợ).
+- term: "DynamoDB"
+  type: tool
+  def: >-
+    DB key-value/document managed của AWS, độ trễ mili giây, scale tự động. Nguồn hoặc serving layer; export/stream ra để phân tích.
+- term: "Cassandra"
+  type: tool
+  def: >-
+    DB wide-column phân tán cho ghi cực nhiều, đọc theo khoá; không dành cho query phân tích tuỳ ý.
+- term: "Bigtable"
+  type: tool
+  def: >-
+    DB wide-column managed của Google (nền của nhiều dịch vụ Google), ghi/đọc theo khoá ở quy mô petabyte.
+- term: "Elasticsearch"
+  type: tool
+  def: >-
+    Engine tìm kiếm full-text và phân tích log; thường là sink cho log hoặc nguồn cần đồng bộ từ warehouse.
+- term: "Redis"
+  type: tool
+  def: >-
+    Kho key-value trong RAM, độ trễ micro giây; dùng làm cache hoặc serving layer cho kết quả đã tính sẵn.
+- term: "Storage tiering"
+  type: pattern
+  def: >-
+    Đưa dữ liệu ít đọc sang tầng lưu trữ rẻ hơn (standard → nearline → coldline/archive) theo tuổi; giảm chi phí storage mà không xoá.
+- term: "Lifecycle policy"
+  type: config
+  def: >-
+    Quy tắc tự động trên bucket: sau N ngày chuyển tầng rẻ hơn, sau M ngày xoá. Cách áp retention cho file trên lake mà không cần job.
+- term: "Partition expiration"
+  type: config
+  def: >-
+    Cấu hình bảng (BigQuery) tự xoá partition cũ hơn N ngày — retention tự động cho bảng raw/staging.
+- term: "Cost per query"
+  type: metric
+  def: >-
+    Chi phí một lần chạy query, tính từ byte quét (on-demand) hoặc giây warehouse. Nhân với số lần chạy mới ra chi phí thật.
+- term: "Spot instance"
+  type: concept
+  def: >-
+    Máy ảo cloud giá rẻ 60–90% nhưng có thể bị thu hồi bất cứ lúc nào — hợp job batch chịu được chạy lại (Spark).
+- term: "Cost of streaming"
+  type: concept
+  def: >-
+    Streaming tốn hơn batch nhiều lần: hạ tầng chạy 24/7, vận hành phức tạp, kỹ năng hiếm. Chỉ trả khi thật sự cần độ trễ giây.

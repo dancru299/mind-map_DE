@@ -3,6 +3,8 @@ import type { TreeNode } from '../content/types'
 import { STEP_BY_ID, colorOf, isAncestorOrSelf } from '../content/load'
 import { bbox, collapsedPath, layout, linkPath, type Placed } from './layout'
 import { useViewport } from './useViewport'
+import { useUserData } from '../store/UserData'
+import { progressOf } from '../store/progress'
 
 interface Props {
   root: TreeNode
@@ -11,9 +13,11 @@ interface Props {
   fitRequest: number                    // tăng số này để yêu cầu "vừa màn hình" sau khi cây đổi
   routeMode: boolean                    // đánh số bước trên node, làm mờ mục ngoài lộ trình
   onNodeClick: (n: TreeNode) => void
+  onNodeMenu: (n: TreeNode, x: number, y: number) => void
 }
 
-export function TreeCanvas({ root, openIds, selected, fitRequest, routeMode, onNodeClick }: Props) {
+export function TreeCanvas({ root, openIds, selected, fitRequest, routeMode, onNodeClick, onNodeMenu }: Props) {
+  const { progress, notes } = useUserData()
   const stageRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
   const { view: vp, zoomPct, wheelMode, setWheelMode } = useViewport(stageRef, worldRef)
@@ -72,6 +76,7 @@ export function TreeCanvas({ root, openIds, selected, fitRequest, routeMode, onN
         {lay.placed.map(p => (
           <NodeView key={p.node.id} p={p} anchor={p.node.parent ? lay.byId.get(p.node.parent.id)! : p}
             open={openIds.has(p.node.id) && p.node.children.length > 0} selected={p.node === selected} onClick={() => onNodeClick(p.node)}
+            onMenu={(x, y) => onNodeMenu(p.node, x, y)} prog={progressOf(p.node, progress)} hasNote={notes.has(p.node.id)}
             step={routeMode ? STEP_BY_ID.get(p.node.id)?.index : undefined} off={routeMode && !onRoute(p.node)} />
         ))}
       </div>
@@ -106,6 +111,8 @@ export function TreeCanvas({ root, openIds, selected, fitRequest, routeMode, onN
             <dt><kbd>Enter</kbd></dt><dd>mở / đóng nhánh</dd>
             <dt><kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd></dt><dd>zoom · vừa màn hình</dd>
             <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>bước sau / trước trong lộ trình</dd>
+            <dt><kbd>M</kbd> <kbd>G</kbd></dt><dd>đánh dấu đã học · mở ghi chú</dd>
+            <dt>Chuột phải</dt><dd>menu: ghi chú, đánh dấu, mở nhánh…</dd>
             <dt><kbd>/</kbd></dt><dd>tìm kiếm</dd>
           </dl>
           <label>Cuộn chuột không giữ phím
@@ -127,7 +134,7 @@ const routeAncestors = new Set<string>()
 STEP_BY_ID.forEach(st => { let s: TreeNode | null = st.node; while (s) { routeAncestors.add(s.id); s = s.parent } })
 const onRoute = (n: TreeNode) => routeAncestors.has(n.id)
 
-function NodeView({ p, anchor, open, selected, onClick, step, off }: { p: Placed; anchor: Placed; open: boolean; selected: boolean; onClick: () => void; step?: number; off?: boolean }) {
+function NodeView({ p, anchor, open, selected, onClick, onMenu, prog, hasNote, step, off }: { p: Placed; anchor: Placed; open: boolean; selected: boolean; onClick: () => void; onMenu: (x: number, y: number) => void; prog: number; hasNote: boolean; step?: number; off?: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   // Lúc mới xuất hiện: đặt tại vị trí cha rồi trượt ra vị trí thật
   useLayoutEffect(() => {
@@ -138,15 +145,24 @@ function NodeView({ p, anchor, open, selected, onClick, step, off }: { p: Placed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const n = p.node
-  const cls = ['node', `depth${Math.min(n.depth, 2)}`, open ? 'open' : '', n.children.length ? '' : 'leaf', selected ? 'sel' : '', off ? 'off' : '', step ? 'onroute' : ''].filter(Boolean).join(' ')
+  const pc = Math.round(prog * 100)
+  const cls = ['node', `depth${Math.min(n.depth, 2)}`, open ? 'open' : '', n.children.length ? '' : 'leaf', selected ? 'sel' : '', off ? 'off' : '', step ? 'onroute' : '', pc >= 100 ? 'done' : pc > 0 ? 'partial' : ''].filter(Boolean).join(' ')
   return (
     <div ref={ref} className={cls} data-id={n.id} tabIndex={0} role="treeitem" aria-expanded={n.children.length ? open : undefined} aria-selected={selected}
       style={{ transform: `translate(${p.x}px,${p.y}px)`, width: p.w, height: p.h, '--lc': colorOf(n) } as CSSProperties}
       onClick={e => { e.stopPropagation(); onClick() }}
-      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() } }}>
+      onContextMenu={e => { e.preventDefault(); e.stopPropagation(); onMenu(e.clientX, e.clientY) }}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() }
+        else if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) { e.preventDefault(); const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); onMenu(r.left + 24, r.bottom) }
+      }}>
       {step && <span className="step" aria-label={`Bước ${step}`}>{step}</span>}
+      {pc >= 100 && <span className="mark" title="Thành thạo"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 7" /></svg></span>}
       <span className="lbl">{n.title}</span>
+      {hasNote && <span className="noteic" title="Có ghi chú"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM8 12h8M8 16h5" /></svg></span>}
+      {pc > 0 && pc < 100 && <span className="pct" title={n.children.length ? 'Tiến độ nhánh (có trọng số)' : 'Mức nắm vững'}>{pc}%</span>}
       {n.children.length > 0 && <span className="cnt">{chev}<span>{n.children.length}</span></span>}
+      {pc > 0 && <span className="pbar" aria-hidden="true"><i style={{ width: `${pc}%` }} /></span>}
     </div>
   )
 }

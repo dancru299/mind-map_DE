@@ -9,6 +9,7 @@ tools:
 bigtech: >-
   Ở đâu cũng vậy: CTE là công cụ đọc code, không phải công cụ tối ưu. Khác nhau chỉ ở chỗ engine nội bộ
   của big tech thường có tài liệu rõ về hành vi; với BigQuery/Snowflake bạn phải tự đọc plan.
+weight: 4
 ---
 
 CTE (`WITH tmp AS (...)`) chỉ là **đặt tên cho một subquery**. Nó giúp code dễ đọc, nhưng không có gì đảm bảo engine sẽ tính khối đó một lần rồi dùng lại. Hai cách engine có thể thực thi:

@@ -5,6 +5,7 @@ tools:
   - 3NF
   - Inmon
   - Denormalization
+weight: 3
 ---
 
 Database ứng dụng (nguồn của bạn) được chuẩn hoá 3NF để tránh trùng lặp khi ghi. Warehouse thì ngược lại — cố ý phi chuẩn hoá để đọc nhanh.

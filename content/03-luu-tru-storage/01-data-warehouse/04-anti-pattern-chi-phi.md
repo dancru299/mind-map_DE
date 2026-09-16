@@ -10,6 +10,7 @@ tools:
 bigtech: >-
   Ở big tech chi phí compute được quản lý ở mức tổ chức và DE ít khi thấy hoá đơn. Ở công ty thường, DE thường là
   người duy nhất đọc được billing export và bị hỏi thẳng "sao tháng này tăng".
+weight: 5
 ---
 
 | Anti-pattern | Vì sao đắt | Sửa |

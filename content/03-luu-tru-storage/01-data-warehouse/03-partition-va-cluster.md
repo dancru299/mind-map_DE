@@ -7,6 +7,7 @@ tools:
   - Z-order (Delta)
   - Hive partitioning
   - Cardinality
+weight: 5
 ---
 
 Warehouse cột không có index kiểu B-tree. Để query rẻ, dữ liệu phải được **xếp sao cho engine bỏ qua được phần không liên quan** — gọi là *data skipping*. Hai công cụ:

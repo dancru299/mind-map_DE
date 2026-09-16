@@ -11,6 +11,7 @@ tools:
 bigtech: >-
   BigQuery là bản thương mại của Dremel — hệ thống nội bộ Google. Ở Google, DE dùng Dremel/F1 với công cụ nội bộ;
   ở công ty thường, BigQuery là warehouse phổ biến nhất trong hệ GCP và chi phí query là chuyện DE bị hỏi mỗi tháng.
+weight: 5
 ---
 
 BigQuery tách hoàn toàn storage (Colossus) và compute (Dremel, chia theo *slot*). Bạn không quản lý server, không tạo index; bạn quản lý **bao nhiêu byte mỗi query đọc**.

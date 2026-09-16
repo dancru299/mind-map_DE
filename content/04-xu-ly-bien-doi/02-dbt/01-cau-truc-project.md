@@ -7,6 +7,7 @@ tools:
   - models/marts
   - sources.yml
   - dbt_project.yml
+weight: 5
 ---
 
 Cấu trúc được dbt Labs khuyến nghị và gần như mọi team dùng:

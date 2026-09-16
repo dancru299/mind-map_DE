@@ -8,6 +8,7 @@ tools:
   - dbt Slim CI
   - pytest
   - Pre-commit
+weight: 5
 ---
 
 - Lint SQL (sqlfluff), lint Python, dbt compile & test trên schema tạm cho mỗi PR (Slim CI: chỉ chạy model đã đổi).

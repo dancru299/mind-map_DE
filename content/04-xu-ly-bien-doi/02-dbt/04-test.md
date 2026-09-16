@@ -8,6 +8,7 @@ tools:
   - dbt_utils
   - dbt_expectations
   - "severity: warn"
+weight: 5
 ---
 
 dbt test = một `SELECT` trả về **các dòng vi phạm**; 0 dòng là pass. Khai báo trong YAML cạnh model:
